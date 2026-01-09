@@ -91,7 +91,7 @@ const mugs = (await getCollection('mugs')).sort(
 				left = Math.random() * 80 + 5;
 				attempts += 1;
 
-				const inCenter = top > 34 && top < 66 && left > 28 && left < 72;
+				const inCenter = top > 28 && top < 72 && left > 22 && left < 78;
 				const tooCloseToOther = positions.some((pos) => {
 					const minDistance = baseMinDistance + (pos.size - 140) * 0.05;
 					return isTooClose({ top, left }, pos, minDistance);
@@ -103,8 +103,8 @@ const mugs = (await getCollection('mugs')).sort(
 			const size = 155 + Math.random() * 45;
 			if (!validPosition) {
 				const angle = (i / count) * Math.PI * 2;
-				top = 50 + Math.sin(angle) * 30;
-				left = 50 + Math.cos(angle) * 35;
+				top = 50 + Math.sin(angle) * 40;
+				left = 50 + Math.cos(angle) * 42;
 			}
 			positions.push({ top, left, size });
 		}
