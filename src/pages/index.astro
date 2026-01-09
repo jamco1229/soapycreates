@@ -63,6 +63,7 @@ const showGrid = false;
         </div>
         <div class="ceramicist-chrome">
             <p class="ceramicist-chrome-tl">Sophie Banks</p>
+            <button class="ceramicist-shuffle" id="shuffle-btn">Shuffle</button>
             <p class="ceramicist-chrome-tr">ARTIST</p>
             <p class="ceramicist-chrome-bl">Norwich, NORFOLK UK</p>
             <a
@@ -240,13 +241,35 @@ const showGrid = false;
         return positions.sort(() => Math.random() - 0.5);
     }
 
-    const positions = generatePositions(containers.length);
-    containers.forEach((container, index) => {
-        const { top, left, size } = positions[index];
-        container.style.top = `${top}%`;
-        container.style.left = `${left}%`;
-        container.style.width = `${size}px`;
-        container.style.animationDelay = `${0.3 + index * 0.08}s`;
+    function applyPositions(animated = false) {
+        const positions = generatePositions(containers.length);
+        containers.forEach((container, index) => {
+            const { top, left, size } = positions[index];
+            if (animated) {
+                container.style.transition = 'top 0.4s ease, left 0.4s ease, width 0.4s ease';
+            }
+            container.style.top = `${top}%`;
+            container.style.left = `${left}%`;
+            container.style.width = `${size}px`;
+            if (!animated) {
+                container.style.animationDelay = `${0.3 + index * 0.08}s`;
+            }
+        });
+        if (animated) {
+            setTimeout(() => {
+                containers.forEach((container) => {
+                    container.style.transition = '';
+                });
+            }, 400);
+        }
+    }
+
+    applyPositions();
+
+    // Shuffle button
+    const shuffleBtn = document.getElementById('shuffle-btn');
+    shuffleBtn.addEventListener('click', () => {
+        applyPositions(true);
     });
 
     // Wait for all mug images to load before animating in
