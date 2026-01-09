@@ -10,10 +10,18 @@ const mugs = (await getCollection('mugs')).sort(
 
 <Layout title="Sophie Banks | Soapy Creates">
 	<main class="ceramicist-page is-loading">
-		<div class="ceramicist-mugs" aria-hidden="true">
+		<div class="ceramicist-mugs">
 			{mugs.map((mug, index) => (
-				<div class="ceramicist-mug-container" data-index={index}>
-					<img src={mug.data.image} alt="" class="ceramicist-mug" loading="eager" />
+				<div
+					class="ceramicist-mug-container"
+					data-index={index}
+					data-title={mug.data.title}
+					data-date={mug.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+					data-image={mug.data.image}
+					role="button"
+					tabindex="0"
+				>
+					<img src={mug.data.image} alt={mug.data.title} class="ceramicist-mug" loading="eager" />
 					<span class="ceramicist-mug-shadow"></span>
 				</div>
 			))}
@@ -29,6 +37,30 @@ const mugs = (await getCollection('mugs')).sort(
 			<p class="ceramicist-subtitle">artist</p>
 		</div>
 	</main>
+
+	<!-- Notecard Modal -->
+	<div class="notecard-overlay" id="notecard-overlay" aria-hidden="true">
+		<div class="notecard" role="dialog" aria-modal="true" aria-labelledby="notecard-title">
+			<svg class="notecard-texture" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+				<filter id="paper-texture">
+					<feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise" />
+					<feDiffuseLighting in="noise" lighting-color="#f5f2eb" surfaceScale="1.5">
+						<feDistantLight azimuth="45" elevation="60" />
+					</feDiffuseLighting>
+				</filter>
+				<rect width="100%" height="100%" filter="url(#paper-texture)" />
+			</svg>
+			<div class="notecard-image-container">
+				<img class="notecard-image" id="notecard-image" src="" alt="" />
+			</div>
+			<div class="notecard-content">
+				<h2 class="notecard-title" id="notecard-title"></h2>
+				<p class="notecard-date" id="notecard-date"></p>
+			</div>
+			<div class="notecard-tape notecard-tape-left"></div>
+			<div class="notecard-tape notecard-tape-right"></div>
+		</div>
+	</div>
 </Layout>
 
 <script type="module">
@@ -92,6 +124,51 @@ const mugs = (await getCollection('mugs')).sort(
 		if (page) {
 			page.classList.remove('is-loading');
 			page.classList.add('is-ready');
+		}
+	});
+
+	// Notecard Modal Logic
+	const overlay = document.getElementById('notecard-overlay');
+	const notecardImage = document.getElementById('notecard-image');
+	const notecardTitle = document.getElementById('notecard-title');
+	const notecardDate = document.getElementById('notecard-date');
+
+	function openNotecard(container) {
+		const title = container.dataset.title;
+		const date = container.dataset.date;
+		const image = container.dataset.image;
+
+		notecardImage.src = image;
+		notecardImage.alt = title;
+		notecardTitle.textContent = title;
+		notecardDate.textContent = date;
+
+		overlay.classList.add('is-visible');
+		overlay.setAttribute('aria-hidden', 'false');
+	}
+
+	function closeNotecard() {
+		overlay.classList.remove('is-visible');
+		overlay.setAttribute('aria-hidden', 'true');
+	}
+
+	containers.forEach((container) => {
+		container.addEventListener('click', () => openNotecard(container));
+		container.addEventListener('keydown', (e) => {
+			if (e.key === 'Enter' || e.key === ' ') {
+				e.preventDefault();
+				openNotecard(container);
+			}
+		});
+	});
+
+	overlay.addEventListener('click', (e) => {
+		if (e.target === overlay) closeNotecard();
+	});
+
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && overlay.classList.contains('is-visible')) {
+			closeNotecard();
 		}
 	});
 </script>

@@ -127,3 +127,169 @@ body {
 		transform: translateY(0);
 	}
 }
+
+/* Notecard Modal Styles */
+.notecard-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(60, 50, 40, 0.4);
+	backdrop-filter: blur(4px);
+	display: grid;
+	place-items: center;
+	z-index: 100;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.notecard-overlay.is-visible {
+	opacity: 1;
+	visibility: visible;
+}
+
+.notecard {
+	position: relative;
+	width: min(90vw, 380px);
+	background: linear-gradient(
+		135deg,
+		#faf8f5 0%,
+		#f5f2eb 50%,
+		#efe9e0 100%
+	);
+	border-radius: 4px;
+	padding: 1.5rem;
+	box-shadow:
+		0 2px 4px rgba(80, 60, 40, 0.08),
+		0 8px 24px rgba(80, 60, 40, 0.12),
+		0 20px 48px rgba(80, 60, 40, 0.16),
+		inset 0 1px 0 rgba(255, 255, 255, 0.8),
+		inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+	transform: perspective(800px) translateY(60px) rotateX(-4deg) rotateZ(2deg);
+	opacity: 0;
+	transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.3s ease;
+	transform-style: preserve-3d;
+}
+
+/* Paper texture SVG overlay */
+.notecard-texture {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0.15;
+	mix-blend-mode: soft-light;
+	border-radius: 4px;
+	pointer-events: none;
+}
+
+/* Subtle vignette for depth */
+.notecard::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(
+		to bottom,
+		transparent 0%,
+		rgba(0, 0, 0, 0.02) 100%
+	);
+	border-radius: 4px;
+	pointer-events: none;
+}
+
+.notecard-overlay.is-visible .notecard {
+	transform: perspective(800px) translateY(0) rotateX(1deg) rotateZ(-1deg);
+	opacity: 1;
+}
+
+.notecard:hover {
+	transform: perspective(800px) translateY(-4px) rotateX(0deg) rotateZ(0deg);
+}
+
+/* Decorative tape strips */
+.notecard-tape {
+	position: absolute;
+	width: 60px;
+	height: 24px;
+	background: linear-gradient(
+		135deg,
+		rgba(255, 245, 200, 0.7) 0%,
+		rgba(245, 230, 180, 0.8) 100%
+	);
+	box-shadow:
+		0 1px 2px rgba(0, 0, 0, 0.1),
+		inset 0 1px 0 rgba(255, 255, 255, 0.5);
+	z-index: 10;
+}
+
+.notecard-tape-left {
+	top: -10px;
+	left: 20px;
+	transform: rotate(-8deg);
+}
+
+.notecard-tape-right {
+	top: -10px;
+	right: 20px;
+	transform: rotate(6deg);
+}
+
+.notecard-image-container {
+	position: relative;
+	width: 100%;
+	aspect-ratio: 1;
+	background: linear-gradient(
+		145deg,
+		#e8e3dc 0%,
+		#ddd6cc 100%
+	);
+	border-radius: 3px;
+	overflow: hidden;
+	margin-bottom: 1rem;
+	box-shadow:
+		inset 0 2px 6px rgba(0, 0, 0, 0.1),
+		0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.notecard-image {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	padding: 1rem;
+}
+
+.notecard-content {
+	text-align: center;
+	padding: 0.5rem 0;
+}
+
+.notecard-title {
+	margin: 0 0 0.25rem;
+	font-size: 1.25rem;
+	font-weight: 500;
+	color: rgba(55, 46, 40, 0.9);
+	letter-spacing: 0.02em;
+}
+
+.notecard-date {
+	margin: 0;
+	font-size: 0.875rem;
+	color: rgba(100, 85, 70, 0.7);
+	font-style: italic;
+}
+
+/* Cursor style for clickable mugs */
+.ceramicist-mug-container {
+	cursor: pointer;
+}
+
+@media (max-width: 768px) {
+	.notecard {
+		width: min(92vw, 340px);
+		padding: 1.25rem;
+	}
+
+	.notecard-tape {
+		width: 50px;
+		height: 20px;
+	}
+}
