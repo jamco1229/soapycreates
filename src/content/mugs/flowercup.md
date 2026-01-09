@@ -5,3 +5,5 @@ image: "/flowercup.png"
 bgImage: "/flowercup_bg.png"
 ---
 
+Pressed flower impressions sit under a clear glaze. The petal edges catch the
+light.

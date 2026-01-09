@@ -5,3 +5,4 @@ image: "/cowboymug.png"
 bgImage: "/cowboymug_bg.png"
 ---
 
+Wide stance, lasso handle, a bit of grit. Built to survive campfire mornings.

@@ -5,3 +5,4 @@ image: "/dottymug.png"
 bgImage: "/dottymug_bg.png"
 ---
 
+Dotted slip and a cloudy glaze. The dots rise slightly so you can feel them.

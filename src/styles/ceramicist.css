@@ -158,7 +158,9 @@ body {
 }
 
 .ceramicist-chrome-tr {
+    top: 2.5rem;
     color: white;
+    right: 2.5rem;
     text-decoration: none;
 }
 

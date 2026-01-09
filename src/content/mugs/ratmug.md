@@ -5,3 +5,4 @@ image: "/ratmug.png"
 bgImage: "/ratmug_bg.png"
 ---
 
+A playful rat mascot tucked into the side. Mischief with a sturdy base.
