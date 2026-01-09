@@ -10,4 +10,9 @@ const mugs = defineCollection({
 	}),
 });
 
-export const collections = { mugs };
+const bio = defineCollection({
+	type: 'content',
+	schema: z.object({}),
+});
+
+export const collections = { mugs, bio };

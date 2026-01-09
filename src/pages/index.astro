@@ -12,6 +12,8 @@ const mugEntries = await Promise.all(
         return { ...mug, Content };
     }),
 );
+const bioEntry = (await getCollection("bio"))[0];
+const bioContent = bioEntry ? (await bioEntry.render()).Content : null;
 const showGrid = false;
 ---
 
@@ -54,15 +56,23 @@ const showGrid = false;
         </div>
 
         <div class="ceramicist-center">
-            <img
-                src="/soapy wordmark.svg"
-                alt="SOAPY"
-                class="ceramicist-wordmark"
-                loading="eager"
-            />
+            <button
+                class="ceramicist-wordmark-button"
+                type="button"
+                aria-label="Open bio"
+            >
+                <img
+                    src="/soapy wordmark.svg"
+                    alt="SOAPY"
+                    class="ceramicist-wordmark"
+                    loading="eager"
+                />
+            </button>
         </div>
         <div class="ceramicist-chrome">
-            <p class="ceramicist-chrome-tl">Sophie Banks</p>
+            <button class="ceramicist-chrome-tl" type="button">
+                Sophie Banks
+            </button>
             <button class="ceramicist-shuffle" id="shuffle-btn">Shuffle</button>
             <p class="ceramicist-chrome-tr">ARTIST</p>
             <p class="ceramicist-chrome-bl">Norwich, NORFOLK UK</p>
@@ -148,6 +158,18 @@ const showGrid = false;
                 </div>
             ))
         }
+    </div>
+    <div class="bio-overlay" id="bio-overlay" aria-hidden="true">
+        <div class="bio-card" role="dialog" aria-modal="true">
+            <div class="bio-images">
+                <img src="/pp.png" alt="" class="bio-image bio-image-front" />
+                <img src="/pp-2.png" alt="" class="bio-image bio-image-back" />
+            </div>
+            <div class="bio-content">
+                <p class="bio-title">Sophie Banks</p>
+                {bioContent ? <bioContent /> : null}
+            </div>
+        </div>
     </div>
 </Layout>
 
@@ -268,8 +290,63 @@ const showGrid = false;
 
     // Shuffle button
     const shuffleBtn = document.getElementById('shuffle-btn');
-    shuffleBtn.addEventListener('click', () => {
-        applyPositions(true);
+    let danceInterval = null;
+    let holdTimeout = null;
+    let isDancing = false;
+
+    function startDancing() {
+        isDancing = true;
+        containers.forEach((container) => {
+            container.classList.add('is-dancing');
+        });
+    }
+
+    function stopDancing() {
+        isDancing = false;
+        containers.forEach((container) => {
+            container.classList.remove('is-dancing');
+        });
+    }
+
+    shuffleBtn.addEventListener('mousedown', () => {
+        holdTimeout = setTimeout(() => {
+            startDancing();
+        }, 5000);
+    });
+
+    shuffleBtn.addEventListener('mouseup', () => {
+        clearTimeout(holdTimeout);
+        if (isDancing) {
+            stopDancing();
+            applyPositions(true);
+        } else {
+            applyPositions(true);
+        }
+    });
+
+    shuffleBtn.addEventListener('mouseleave', () => {
+        clearTimeout(holdTimeout);
+        if (isDancing) {
+            stopDancing();
+        }
+    });
+
+    // Touch support for dance
+    shuffleBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        holdTimeout = setTimeout(() => {
+            startDancing();
+        }, 5000);
+    });
+
+    shuffleBtn.addEventListener('touchend', () => {
+        clearTimeout(holdTimeout);
+        if (isDancing) {
+            stopDancing();
+            applyPositions(true);
+        } else {
+            applyPositions(true);
+        }
     });
 
     // Wait for all mug images to load before animating in
@@ -304,6 +381,13 @@ const showGrid = false;
     const nextArrow = overlay.querySelector(".notecard-arrow-next");
     const descriptionSources = Array.from(
         document.querySelectorAll(".notecard-description-source"),
+    );
+    const bioOverlay = document.getElementById("bio-overlay");
+    const bioCard = bioOverlay?.querySelector(".bio-card");
+    const bioTriggers = Array.from(
+        document.querySelectorAll(
+            ".ceramicist-wordmark-button, .ceramicist-chrome-tl",
+        ),
     );
 
     let currentIndex = 0;
@@ -401,6 +485,18 @@ const showGrid = false;
         overlay.setAttribute("aria-hidden", "true");
     }
 
+    function openBio() {
+        if (!bioOverlay) return;
+        bioOverlay.classList.add("is-visible");
+        bioOverlay.setAttribute("aria-hidden", "false");
+    }
+
+    function closeBio() {
+        if (!bioOverlay) return;
+        bioOverlay.classList.remove("is-visible");
+        bioOverlay.setAttribute("aria-hidden", "true");
+    }
+
     function goToPrev() {
         if (isAnimating) return;
         const newIndex =
@@ -421,6 +517,13 @@ const showGrid = false;
                 e.preventDefault();
                 openNotecard(container);
             }
+        });
+    });
+
+    bioTriggers.forEach((trigger) => {
+        trigger.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openBio();
         });
     });
 
@@ -456,11 +559,22 @@ const showGrid = false;
         if (e.target === overlay) closeNotecard();
     });
 
+    if (bioOverlay && bioCard) {
+        bioOverlay.addEventListener("click", (e) => {
+            if (e.target === bioOverlay) closeBio();
+        });
+    }
+
     document.addEventListener("keydown", (e) => {
         if (!overlay.classList.contains("is-visible")) return;
         if (e.key === "Escape") closeNotecard();
         if (e.key === "ArrowLeft") goToPrev();
         if (e.key === "ArrowRight") goToNext();
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if (!bioOverlay || !bioOverlay.classList.contains("is-visible")) return;
+        if (e.key === "Escape") closeBio();
     });
 
     // Swipe support for mobile - card follows finger
