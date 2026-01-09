@@ -1,450 +1,607 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
-import '../styles/ceramicist.css';
+import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import "../styles/ceramicist.css";
 
-const mugs = (await getCollection('mugs')).sort(
-	(a, b) => a.data.date.valueOf() - b.data.date.valueOf()
+const mugs = (await getCollection("mugs")).sort(
+    (a, b) => a.data.date.valueOf() - b.data.date.valueOf(),
+);
+const mugEntries = await Promise.all(
+    mugs.map(async (mug) => {
+        const { Content } = await mug.render();
+        return { ...mug, Content };
+    }),
 );
 const showGrid = false;
 ---
 
 <Layout title="Sophie Banks | Soapy Creates">
-	<main class={`ceramicist-page is-loading ${showGrid ? 'show-grid' : ''}`}>
-		{showGrid ? <div class="ceramicist-grid" aria-hidden="true"></div> : null}
-		<div class="ceramicist-mugs">
-			{mugs.map((mug, index) => (
-				<div
-					class="ceramicist-mug-container"
-					data-index={index}
-					data-title={mug.data.title}
-					data-date={mug.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-					data-image={mug.data.image}
-					data-bg-image={mug.data.bgImage}
-					role="button"
-					tabindex="0"
-				>
-					<img src={mug.data.image} alt="" class="ceramicist-mug-shadow-img" loading="eager" aria-hidden="true" />
-					<img src={mug.data.image} alt={mug.data.title} class="ceramicist-mug" loading="eager" />
-				</div>
-			))}
-		</div>
+    <main class={`ceramicist-page is-loading ${showGrid ? "show-grid" : ""}`}>
+        {showGrid ? <div class="ceramicist-grid" aria-hidden="true" /> : null}
+        <div class="ceramicist-mugs">
+            {
+                mugEntries.map((mug, index) => (
+                    <div
+                        class="ceramicist-mug-container"
+                        data-index={index}
+                        data-title={mug.data.title}
+                        data-date={mug.data.date.toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                        })}
+                        data-image={mug.data.image}
+                        data-bg-image={mug.data.bgImage}
+                        role="button"
+                        tabindex="0"
+                    >
+                        <img
+                            src={mug.data.image}
+                            alt=""
+                            class="ceramicist-mug-shadow-img"
+                            loading="eager"
+                            aria-hidden="true"
+                        />
+                        <img
+                            src={mug.data.image}
+                            alt={mug.data.title}
+                            class="ceramicist-mug"
+                            loading="eager"
+                        />
+                    </div>
+                ))
+            }
+        </div>
 
-		<div class="ceramicist-center">
-			<img
-				src="/soapy wordmark.svg"
-				alt="SOAPY"
-				class="ceramicist-wordmark"
-				loading="eager"
-			/>
-		</div>
-		<div class="ceramicist-chrome">
-			<p class="ceramicist-chrome-tl">ARTIST</p>
-			<p class="ceramicist-chrome-bl">Norwich, NORFOLK UK</p>
-			<a
-				href="https://instagram.com/soapycreates"
-				target="_blank"
-				rel="noopener"
-				class="ceramicist-chrome-tr"
-			>
-				INSTA
-			</a>
-			<p class="ceramicist-chrome-br">@SOAPYCREATES</p>
-		</div>
-	</main>
+        <div class="ceramicist-center">
+            <img
+                src="/soapy wordmark.svg"
+                alt="SOAPY"
+                class="ceramicist-wordmark"
+                loading="eager"
+            />
+        </div>
+        <div class="ceramicist-chrome">
+            <p class="ceramicist-chrome-tl">Sophie Banks</p>
+            <p class="ceramicist-chrome-tr">ARTIST</p>
+            <p class="ceramicist-chrome-bl">Norwich, NORFOLK UK</p>
+            <a
+                href="https://instagram.com/soapycreates"
+                target="_blank"
+                rel="noopener"
+                class="ceramicist-chrome-br"
+            >
+                @SOAPYCREATES
+            </a>
+        </div>
+    </main>
 
-	<!-- Notecard Modal -->
-	<div class="notecard-overlay" id="notecard-overlay" aria-hidden="true">
-		<div class="notecard" role="dialog" aria-modal="true" aria-labelledby="notecard-title">
-			<svg class="notecard-texture" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-				<filter id="paper-texture">
-					<feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise" />
-					<feDiffuseLighting in="noise" lighting-color="#f5f2eb" surfaceScale="1.5">
-						<feDistantLight azimuth="45" elevation="60" />
-					</feDiffuseLighting>
-				</filter>
-				<rect width="100%" height="100%" filter="url(#paper-texture)" />
-			</svg>
-			<div class="notecard-image-container">
-				<img class="notecard-image" id="notecard-image" src="" alt="" />
-			</div>
-			<div class="notecard-content">
-				<h2 class="notecard-title" id="notecard-title"></h2>
-				<p class="notecard-date" id="notecard-date"></p>
-			</div>
-			<div class="notecard-tape notecard-tape-left"></div>
-			<div class="notecard-tape notecard-tape-right"></div>
-		</div>
-		<span class="notecard-arrow notecard-arrow-prev" aria-label="Previous">&larr;</span>
-		<span class="notecard-arrow notecard-arrow-next" aria-label="Next">&rarr;</span>
-	</div>
+    <!-- Notecard Modal -->
+    <div class="notecard-overlay" id="notecard-overlay" aria-hidden="true">
+        <div
+            class="notecard"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="notecard-title"
+        >
+            <svg
+                class="notecard-texture"
+                viewBox="0 0 200 200"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <filter id="paper-texture">
+                    <feTurbulence
+                        type="fractalNoise"
+                        baseFrequency="0.9"
+                        numOctaves="4"
+                        result="noise"></feTurbulence>
+                    <feDiffuseLighting
+                        in="noise"
+                        lighting-color="#f5f2eb"
+                        surfaceScale="1.5"
+                    >
+                        <feDistantLight azimuth="45" elevation="60"
+                        ></feDistantLight>
+                    </feDiffuseLighting>
+                </filter>
+                <rect width="100%" height="100%" filter="url(#paper-texture)"
+                ></rect>
+            </svg>
+            <div class="notecard-image-container">
+                <div class="notecard-paperclip" aria-hidden="true"></div>
+                <img class="notecard-image" id="notecard-image" src="" alt="" />
+            </div>
+            <div class="notecard-content">
+                <h2 class="notecard-title" id="notecard-title"></h2>
+                <p class="notecard-date" id="notecard-date"></p>
+                <div class="notecard-description">
+                    <div
+                        class="notecard-description-body"
+                        id="notecard-description"
+                    >
+                    </div>
+                    <button
+                        class="notecard-show-more"
+                        id="notecard-show-more"
+                        type="button"
+                    >
+                        Show more
+                    </button>
+                </div>
+            </div>
+            <div class="notecard-tape notecard-tape-left"></div>
+            <div class="notecard-tape notecard-tape-right"></div>
+        </div>
+        <span class="notecard-arrow notecard-arrow-prev" aria-label="Previous"
+            >&larr;</span
+        >
+        <span class="notecard-arrow notecard-arrow-next" aria-label="Next"
+            >&rarr;</span
+        >
+    </div>
+    <div class="notecard-descriptions" aria-hidden="true">
+        {
+            mugEntries.map((mug, index) => (
+                <div class="notecard-description-source" data-index={index}>
+                    <mug.Content />
+                </div>
+            ))
+        }
+    </div>
 </Layout>
 
 <script type="module">
-	const containers = Array.from(
-		document.querySelectorAll('.ceramicist-mug-container')
-	);
+    const containers = Array.from(
+        document.querySelectorAll(".ceramicist-mug-container"),
+    );
 
-	function generatePositions(count) {
-		const isMobile = window.innerWidth <= 768;
+    function generatePositions(count) {
+        const isMobile = window.innerWidth <= 768;
 
-		// Define zones around the center wordmark
-		// Each zone has: top range, left range, and max mugs allowed
-		const zones = isMobile ? [
-			// Mobile: stack vertically with mugs on sides
-			{ top: [3, 20], left: [5, 35], max: 2 },    // Top left
-			{ top: [3, 20], left: [65, 95], max: 2 },   // Top right
-			{ top: [25, 40], left: [3, 25], max: 1 },   // Mid-upper left
-			{ top: [25, 40], left: [75, 97], max: 1 },  // Mid-upper right
-			{ top: [60, 75], left: [3, 25], max: 1 },   // Mid-lower left
-			{ top: [60, 75], left: [75, 97], max: 1 },  // Mid-lower right
-			{ top: [78, 95], left: [5, 35], max: 2 },   // Bottom left
-			{ top: [78, 95], left: [65, 95], max: 2 },  // Bottom right
-		] : [
-			// Desktop: spread around center
-			{ top: [5, 22], left: [3, 22], max: 2 },    // Top left corner
-			{ top: [5, 22], left: [28, 48], max: 1 },   // Top left-center
-			{ top: [5, 22], left: [52, 72], max: 1 },   // Top right-center
-			{ top: [5, 22], left: [78, 97], max: 2 },   // Top right corner
-			{ top: [30, 50], left: [3, 18], max: 1 },   // Middle left upper
-			{ top: [50, 70], left: [3, 18], max: 1 },   // Middle left lower
-			{ top: [30, 50], left: [82, 97], max: 1 },  // Middle right upper
-			{ top: [50, 70], left: [82, 97], max: 1 },  // Middle right lower
-			{ top: [78, 95], left: [3, 22], max: 2 },   // Bottom left corner
-			{ top: [78, 95], left: [28, 48], max: 1 },  // Bottom left-center
-			{ top: [78, 95], left: [52, 72], max: 1 },  // Bottom right-center
-			{ top: [78, 95], left: [78, 97], max: 2 },  // Bottom right corner
-		];
+        // Define zones around the center wordmark
+        // Each zone has: top range, left range, and max mugs allowed
+        const zones = isMobile
+            ? [
+                  // Mobile: tighter center exclusion, mugs closer to wordmark
+                  { top: [4, 16], left: [5, 35], max: 1 }, // Top left
+                  { top: [4, 16], left: [40, 60], max: 1 }, // Top center
+                  { top: [4, 16], left: [65, 95], max: 1 }, // Top right
+                  { top: [18, 32], left: [3, 30], max: 1 }, // Upper-mid left
+                  { top: [18, 32], left: [70, 97], max: 1 }, // Upper-mid right
+                  { top: [36, 48], left: [3, 25], max: 1 }, // Mid-upper left (closer to center)
+                  { top: [36, 48], left: [75, 97], max: 1 }, // Mid-upper right (closer to center)
+                  { top: [55, 67], left: [3, 25], max: 1 }, // Mid-lower left (closer to center)
+                  { top: [55, 67], left: [75, 97], max: 1 }, // Mid-lower right (closer to center)
+                  { top: [70, 82], left: [3, 30], max: 1 }, // Lower-mid left
+                  { top: [70, 82], left: [70, 97], max: 1 }, // Lower-mid right
+                  { top: [85, 96], left: [15, 45], max: 1 }, // Bottom left
+                  { top: [85, 96], left: [55, 85], max: 1 }, // Bottom right
+              ]
+            : [
+                  // Desktop: spread around center
+                  { top: [5, 22], left: [3, 22], max: 2 }, // Top left corner
+                  { top: [5, 22], left: [28, 48], max: 1 }, // Top left-center
+                  { top: [5, 22], left: [52, 72], max: 1 }, // Top right-center
+                  { top: [5, 22], left: [78, 97], max: 2 }, // Top right corner
+                  { top: [30, 50], left: [3, 18], max: 1 }, // Middle left upper
+                  { top: [50, 70], left: [3, 18], max: 1 }, // Middle left lower
+                  { top: [30, 50], left: [82, 97], max: 1 }, // Middle right upper
+                  { top: [50, 70], left: [82, 97], max: 1 }, // Middle right lower
+                  { top: [78, 95], left: [3, 22], max: 2 }, // Bottom left corner
+                  { top: [78, 95], left: [28, 48], max: 1 }, // Bottom left-center
+                  { top: [78, 95], left: [52, 72], max: 1 }, // Bottom right-center
+                  { top: [78, 95], left: [78, 97], max: 2 }, // Bottom right corner
+              ];
 
-		// Track how many mugs placed in each zone
-		const zoneCounts = zones.map(() => 0);
-		const positions = [];
+        // Track how many mugs placed in each zone
+        const zoneCounts = zones.map(() => 0);
+        const positions = [];
 
-		// Size range
-		const minSize = isMobile ? 145 : 170;
-		const sizeRange = isMobile ? 40 : 55;
+        // Size range
+        const minSize = isMobile ? 145 : 170;
+        const sizeRange = isMobile ? 40 : 55;
 
-		for (let i = 0; i < count; i++) {
-			// Find zones that aren't full, preferring emptier ones
-			const availableZones = zones
-				.map((zone, idx) => ({ zone, idx, count: zoneCounts[idx] }))
-				.filter(({ zone, count }) => count < zone.max)
-				.sort((a, b) => a.count - b.count);
+        for (let i = 0; i < count; i++) {
+            // Find zones that aren't full, preferring emptier ones
+            const availableZones = zones
+                .map((zone, idx) => ({ zone, idx, count: zoneCounts[idx] }))
+                .filter(({ zone, count }) => count < zone.max)
+                .sort((a, b) => a.count - b.count);
 
-			if (availableZones.length === 0) {
-				// All zones full, cycle through
-				const idx = i % zones.length;
-				availableZones.push({ zone: zones[idx], idx, count: zoneCounts[idx] });
-			}
+            if (availableZones.length === 0) {
+                // All zones full, cycle through
+                const idx = i % zones.length;
+                availableZones.push({
+                    zone: zones[idx],
+                    idx,
+                    count: zoneCounts[idx],
+                });
+            }
 
-			// Pick from least-filled zones with some randomness
-			const leastFilled = availableZones.filter(z => z.count === availableZones[0].count);
-			const { zone, idx } = leastFilled[Math.floor(Math.random() * leastFilled.length)];
-			zoneCounts[idx]++;
+            // Pick from least-filled zones with some randomness
+            const leastFilled = availableZones.filter(
+                (z) => z.count === availableZones[0].count,
+            );
+            const { zone, idx } =
+                leastFilled[Math.floor(Math.random() * leastFilled.length)];
+            zoneCounts[idx]++;
 
-			// Random position within zone with slight jitter
-			const top = zone.top[0] + Math.random() * (zone.top[1] - zone.top[0]);
-			const left = zone.left[0] + Math.random() * (zone.left[1] - zone.left[0]);
-			const size = minSize + Math.random() * sizeRange;
+            // Random position within zone with slight jitter
+            const top =
+                zone.top[0] + Math.random() * (zone.top[1] - zone.top[0]);
+            const left =
+                zone.left[0] + Math.random() * (zone.left[1] - zone.left[0]);
+            const size = minSize + Math.random() * sizeRange;
 
-			positions.push({ top, left, size });
-		}
+            positions.push({ top, left, size });
+        }
 
-		// Shuffle positions so same zones don't always animate together
-		return positions.sort(() => Math.random() - 0.5);
-	}
+        // Shuffle positions so same zones don't always animate together
+        return positions.sort(() => Math.random() - 0.5);
+    }
 
-	const positions = generatePositions(containers.length);
-	containers.forEach((container, index) => {
-		const { top, left, size } = positions[index];
-		container.style.top = `${top}%`;
-		container.style.left = `${left}%`;
-		container.style.width = `${size}px`;
-		container.style.animationDelay = `${0.3 + index * 0.08}s`;
-	});
+    const positions = generatePositions(containers.length);
+    containers.forEach((container, index) => {
+        const { top, left, size } = positions[index];
+        container.style.top = `${top}%`;
+        container.style.left = `${left}%`;
+        container.style.width = `${size}px`;
+        container.style.animationDelay = `${0.3 + index * 0.08}s`;
+    });
 
-	// Wait for all mug images to load before animating in
-	const mugImages = Array.from(document.querySelectorAll('.ceramicist-mug'));
-	const imagePromises = mugImages.map((img) => {
-		if (img.complete) return Promise.resolve();
-		return new Promise((resolve) => {
-			img.onload = resolve;
-			img.onerror = resolve;
-		});
-	});
+    // Wait for all mug images to load before animating in
+    const mugImages = Array.from(document.querySelectorAll(".ceramicist-mug"));
+    const imagePromises = mugImages.map((img) => {
+        if (img.complete) return Promise.resolve();
+        return new Promise((resolve) => {
+            img.onload = resolve;
+            img.onerror = resolve;
+        });
+    });
 
-	Promise.all(imagePromises).then(() => {
-		requestAnimationFrame(() => {
-			const page = document.querySelector('.ceramicist-page');
-			if (page) {
-				page.classList.remove('is-loading');
-				page.classList.add('is-ready');
-			}
-		});
-	});
+    Promise.all(imagePromises).then(() => {
+        requestAnimationFrame(() => {
+            const page = document.querySelector(".ceramicist-page");
+            if (page) {
+                page.classList.remove("is-loading");
+                page.classList.add("is-ready");
+            }
+        });
+    });
 
-	// Notecard Modal Logic
-	const overlay = document.getElementById('notecard-overlay');
-	const notecard = overlay.querySelector('.notecard');
-	const notecardImage = document.getElementById('notecard-image');
-	const notecardTitle = document.getElementById('notecard-title');
-	const notecardDate = document.getElementById('notecard-date');
-	const prevArrow = overlay.querySelector('.notecard-arrow-prev');
-	const nextArrow = overlay.querySelector('.notecard-arrow-next');
+    // Notecard Modal Logic
+    const overlay = document.getElementById("notecard-overlay");
+    const notecard = overlay.querySelector(".notecard");
+    const notecardImage = document.getElementById("notecard-image");
+    const notecardTitle = document.getElementById("notecard-title");
+    const notecardDate = document.getElementById("notecard-date");
+    const notecardDescription = document.getElementById("notecard-description");
+    const notecardShowMore = document.getElementById("notecard-show-more");
+    const prevArrow = overlay.querySelector(".notecard-arrow-prev");
+    const nextArrow = overlay.querySelector(".notecard-arrow-next");
+    const descriptionSources = Array.from(
+        document.querySelectorAll(".notecard-description-source"),
+    );
 
-	let currentIndex = 0;
-	let isAnimating = false;
+    let currentIndex = 0;
+    let isAnimating = false;
 
-	function showMug(index, direction = null, fromDrag = false) {
-		const container = containers[index];
-		const title = container.dataset.title;
-		const date = container.dataset.date;
-		const bgImage = container.dataset.bgImage;
+    function updateDescription(index) {
+        const source = descriptionSources.find(
+            (item) => item.dataset.index === String(index),
+        );
+        notecardDescription.innerHTML = source ? source.innerHTML : "";
+        notecardDescription.classList.remove("is-expanded");
+        notecardShowMore.textContent = "Show more";
 
-		if (direction && !isAnimating) {
-			isAnimating = true;
-			const slideIn = direction === 'next' ? 'slide-in-right' : 'slide-in-left';
+        requestAnimationFrame(() => {
+            const hasOverflow =
+                notecardDescription.scrollHeight >
+                notecardDescription.clientHeight + 1;
+            notecardShowMore.style.display = hasOverflow
+                ? "inline-flex"
+                : "none";
+        });
+    }
 
-			if (fromDrag) {
-				// Skip slide-out, user already dragged it away
-				notecardImage.src = bgImage;
-				notecardImage.alt = title;
-				notecardTitle.textContent = title;
-				notecardDate.textContent = date;
+    function showMug(index, direction = null, fromDrag = false) {
+        const container = containers[index];
+        const title = container.dataset.title;
+        const date = container.dataset.date;
+        const bgImage = container.dataset.bgImage;
 
-				notecard.offsetHeight;
-				notecard.classList.add(slideIn);
+        if (direction && !isAnimating) {
+            isAnimating = true;
+            const slideIn =
+                direction === "next" ? "slide-in-right" : "slide-in-left";
 
-				setTimeout(() => {
-					notecard.classList.remove(slideIn);
-					isAnimating = false;
-				}, 280);
-			} else {
-				// Full animation for arrow/keyboard nav
-				const slideOut = direction === 'next' ? 'slide-out-left' : 'slide-out-right';
+            if (fromDrag) {
+                // Skip slide-out, user already dragged it away
+                notecardImage.src = bgImage;
+                notecardImage.alt = title;
+                notecardTitle.textContent = title;
+                notecardDate.textContent = date;
+                updateDescription(index);
 
-				notecard.offsetHeight;
-				notecard.classList.add(slideOut);
+                notecard.offsetHeight;
+                notecard.classList.add(slideIn);
 
-				setTimeout(() => {
-					notecardImage.src = bgImage;
-					notecardImage.alt = title;
-					notecardTitle.textContent = title;
-					notecardDate.textContent = date;
+                setTimeout(() => {
+                    notecard.classList.remove(slideIn);
+                    isAnimating = false;
+                }, 280);
+            } else {
+                // Full animation for arrow/keyboard nav
+                const slideOut =
+                    direction === "next" ? "slide-out-left" : "slide-out-right";
 
-					notecard.classList.remove(slideOut);
-					notecard.offsetHeight;
-					notecard.classList.add(slideIn);
+                notecard.offsetHeight;
+                notecard.classList.add(slideOut);
 
-					setTimeout(() => {
-						notecard.classList.remove(slideIn);
-						isAnimating = false;
-					}, 280);
-				}, 220);
-			}
-		} else {
-			notecardImage.src = bgImage;
-			notecardImage.alt = title;
-			notecardTitle.textContent = title;
-			notecardDate.textContent = date;
-		}
+                setTimeout(() => {
+                    notecardImage.src = bgImage;
+                    notecardImage.alt = title;
+                    notecardTitle.textContent = title;
+                    notecardDate.textContent = date;
+                    updateDescription(index);
 
-		currentIndex = index;
-	}
+                    notecard.classList.remove(slideOut);
+                    notecard.offsetHeight;
+                    notecard.classList.add(slideIn);
 
-	function openNotecard(container) {
-		currentIndex = parseInt(container.dataset.index);
-		showMug(currentIndex);
-		overlay.classList.add('is-visible');
-		overlay.setAttribute('aria-hidden', 'false');
-	}
+                    setTimeout(() => {
+                        notecard.classList.remove(slideIn);
+                        isAnimating = false;
+                    }, 280);
+                }, 220);
+            }
+        } else {
+            notecardImage.src = bgImage;
+            notecardImage.alt = title;
+            notecardTitle.textContent = title;
+            notecardDate.textContent = date;
+            updateDescription(index);
+        }
 
-	function closeNotecard() {
-		overlay.classList.remove('is-visible');
-		overlay.setAttribute('aria-hidden', 'true');
-	}
+        currentIndex = index;
+    }
 
-	function goToPrev() {
-		if (isAnimating) return;
-		const newIndex = (currentIndex - 1 + containers.length) % containers.length;
-		showMug(newIndex, 'prev');
-	}
+    function openNotecard(container) {
+        currentIndex = parseInt(container.dataset.index);
+        showMug(currentIndex);
+        overlay.classList.add("is-visible");
+        overlay.setAttribute("aria-hidden", "false");
+    }
 
-	function goToNext() {
-		if (isAnimating) return;
-		const newIndex = (currentIndex + 1) % containers.length;
-		showMug(newIndex, 'next');
-	}
+    function closeNotecard() {
+        overlay.classList.remove("is-visible");
+        overlay.setAttribute("aria-hidden", "true");
+    }
 
-	containers.forEach((container) => {
-		container.addEventListener('click', () => openNotecard(container));
-		container.addEventListener('keydown', (e) => {
-			if (e.key === 'Enter' || e.key === ' ') {
-				e.preventDefault();
-				openNotecard(container);
-			}
-		});
-	});
+    function goToPrev() {
+        if (isAnimating) return;
+        const newIndex =
+            (currentIndex - 1 + containers.length) % containers.length;
+        showMug(newIndex, "prev");
+    }
 
-	prevArrow.addEventListener('click', (e) => {
-		e.stopPropagation();
-		goToPrev();
-	});
+    function goToNext() {
+        if (isAnimating) return;
+        const newIndex = (currentIndex + 1) % containers.length;
+        showMug(newIndex, "next");
+    }
 
-	nextArrow.addEventListener('click', (e) => {
-		e.stopPropagation();
-		goToNext();
-	});
+    containers.forEach((container) => {
+        container.addEventListener("click", () => openNotecard(container));
+        container.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                openNotecard(container);
+            }
+        });
+    });
 
-	overlay.addEventListener('click', (e) => {
-		if (e.target === overlay) closeNotecard();
-	});
+    prevArrow.addEventListener("click", (e) => {
+        e.stopPropagation();
+        goToPrev();
+    });
 
-	document.addEventListener('keydown', (e) => {
-		if (!overlay.classList.contains('is-visible')) return;
-		if (e.key === 'Escape') closeNotecard();
-		if (e.key === 'ArrowLeft') goToPrev();
-		if (e.key === 'ArrowRight') goToNext();
-	});
+    nextArrow.addEventListener("click", (e) => {
+        e.stopPropagation();
+        goToNext();
+    });
 
-	// Swipe support for mobile - card follows finger
-	let touchStartX = 0;
-	let currentTouchX = 0;
-	let isSwiping = false;
+    notecardShowMore.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isExpanded = notecardDescription.classList.toggle("is-expanded");
+        notecardShowMore.textContent = isExpanded ? "Show less" : "Show more";
+        if (!isExpanded) {
+            requestAnimationFrame(() => {
+                const hasOverflow =
+                    notecardDescription.scrollHeight >
+                    notecardDescription.clientHeight + 1;
+                notecardShowMore.style.display = hasOverflow
+                    ? "inline-flex"
+                    : "none";
+            });
+        } else {
+            notecardShowMore.style.display = "inline-flex";
+        }
+    });
 
-	notecard.addEventListener('touchstart', (e) => {
-		if (isAnimating) return;
-		touchStartX = e.changedTouches[0].screenX;
-		currentTouchX = touchStartX;
-		isSwiping = true;
-		notecard.style.transition = 'none';
-	}, { passive: true });
+    overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) closeNotecard();
+    });
 
-	notecard.addEventListener('touchmove', (e) => {
-		if (!isSwiping) return;
-		currentTouchX = e.changedTouches[0].screenX;
-		const diff = currentTouchX - touchStartX;
-		// Move card with finger, with slight resistance
-		const resistance = 0.6;
-		notecard.style.transform = `translateX(${diff * resistance}px) rotate(${diff * 0.02}deg)`;
-	}, { passive: true });
+    document.addEventListener("keydown", (e) => {
+        if (!overlay.classList.contains("is-visible")) return;
+        if (e.key === "Escape") closeNotecard();
+        if (e.key === "ArrowLeft") goToPrev();
+        if (e.key === "ArrowRight") goToNext();
+    });
 
-	notecard.addEventListener('touchend', (e) => {
-		if (!isSwiping) return;
-		isSwiping = false;
-		const diff = currentTouchX - touchStartX;
-		const threshold = 60;
+    // Swipe support for mobile - card follows finger
+    let touchStartX = 0;
+    let currentTouchX = 0;
+    let isSwiping = false;
 
-		if (Math.abs(diff) > threshold) {
-			// Swipe left (diff < 0) = next, swipe right (diff > 0) = prev
-			const goingNext = diff < 0;
-			const newIndex = goingNext
-				? (currentIndex + 1) % containers.length
-				: (currentIndex - 1 + containers.length) % containers.length;
+    notecard.addEventListener(
+        "touchstart",
+        (e) => {
+            if (isAnimating) return;
+            touchStartX = e.changedTouches[0].screenX;
+            currentTouchX = touchStartX;
+            isSwiping = true;
+            notecard.style.transition = "none";
+        },
+        { passive: true },
+    );
 
-			// Fly current card off in swipe direction
-			const flyOutX = goingNext ? -window.innerWidth : window.innerWidth;
-			notecard.style.transition = 'transform 0.2s ease-in';
-			notecard.style.transform = `translateX(${flyOutX}px)`;
+    notecard.addEventListener(
+        "touchmove",
+        (e) => {
+            if (!isSwiping) return;
+            currentTouchX = e.changedTouches[0].screenX;
+            const diff = currentTouchX - touchStartX;
+            // Move card with finger, with slight resistance
+            const resistance = 0.6;
+            notecard.style.transform = `translateX(${diff * resistance}px) rotate(${diff * 0.02}deg)`;
+        },
+        { passive: true },
+    );
 
-			setTimeout(() => {
-				// Position new card on opposite side
-				const enterFromX = goingNext ? window.innerWidth : -window.innerWidth;
-				notecard.style.transition = 'none';
-				notecard.style.transform = `translateX(${enterFromX}px)`;
+    notecard.addEventListener(
+        "touchend",
+        (e) => {
+            if (!isSwiping) return;
+            isSwiping = false;
+            const diff = currentTouchX - touchStartX;
+            const threshold = 60;
 
-				showMug(newIndex, goingNext ? 'next' : 'prev', true);
+            if (Math.abs(diff) > threshold) {
+                // Swipe left (diff < 0) = next, swipe right (diff > 0) = prev
+                const goingNext = diff < 0;
+                const newIndex = goingNext
+                    ? (currentIndex + 1) % containers.length
+                    : (currentIndex - 1 + containers.length) %
+                      containers.length;
 
-				// Slide new card to center
-				requestAnimationFrame(() => {
-					requestAnimationFrame(() => {
-						notecard.style.transition = 'transform 0.2s ease-out';
-						notecard.style.transform = 'translateX(0)';
-					});
-				});
-			}, 200);
-		} else {
-			// Snap back
-			notecard.style.transition = 'transform 0.2s ease-out';
-			notecard.style.transform = 'translateX(0)';
-		}
-	}, { passive: true });
+                // Fly current card off in swipe direction
+                const flyOutX = goingNext
+                    ? -window.innerWidth
+                    : window.innerWidth;
+                notecard.style.transition = "transform 0.2s ease-in";
+                notecard.style.transform = `translateX(${flyOutX}px)`;
 
-	// Drag support for desktop
-	let isDragging = false;
-	let dragStartX = 0;
-	let dragCurrentX = 0;
-	let hasDragged = false;
+                setTimeout(() => {
+                    // Position new card on opposite side
+                    const enterFromX = goingNext
+                        ? window.innerWidth
+                        : -window.innerWidth;
+                    notecard.style.transition = "none";
+                    notecard.style.transform = `translateX(${enterFromX}px)`;
 
-	notecard.addEventListener('mousedown', (e) => {
-		if (isAnimating) return;
-		isDragging = true;
-		hasDragged = false;
-		dragStartX = e.clientX;
-		dragCurrentX = e.clientX;
-		notecard.style.cursor = 'grabbing';
-		notecard.style.transition = 'none';
-	});
+                    showMug(newIndex, goingNext ? "next" : "prev", true);
 
-	document.addEventListener('mousemove', (e) => {
-		if (!isDragging) return;
-		dragCurrentX = e.clientX;
-		const diff = dragCurrentX - dragStartX;
+                    // Slide new card to center
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            notecard.style.transition =
+                                "transform 0.2s ease-out";
+                            notecard.style.transform = "translateX(0)";
+                        });
+                    });
+                }, 200);
+            } else {
+                // Snap back
+                notecard.style.transition = "transform 0.2s ease-out";
+                notecard.style.transform = "translateX(0)";
+            }
+        },
+        { passive: true },
+    );
 
-		if (Math.abs(diff) > 5) hasDragged = true;
+    // Drag support for desktop
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragCurrentX = 0;
+    let hasDragged = false;
 
-		const resistance = 0.6;
-		notecard.style.transform = `translateX(${diff * resistance}px) rotate(${diff * 0.02}deg)`;
-	});
+    notecard.addEventListener("mousedown", (e) => {
+        if (isAnimating) return;
+        isDragging = true;
+        hasDragged = false;
+        dragStartX = e.clientX;
+        dragCurrentX = e.clientX;
+        notecard.style.cursor = "grabbing";
+        notecard.style.transition = "none";
+    });
 
-	document.addEventListener('mouseup', () => {
-		if (!isDragging) return;
-		isDragging = false;
-		notecard.style.cursor = '';
+    document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        dragCurrentX = e.clientX;
+        const diff = dragCurrentX - dragStartX;
 
-		const diff = dragCurrentX - dragStartX;
-		const threshold = 60;
+        if (Math.abs(diff) > 5) hasDragged = true;
 
-		if (Math.abs(diff) > threshold) {
-			// Drag left (diff < 0) = next, drag right (diff > 0) = prev
-			const goingNext = diff < 0;
-			const newIndex = goingNext
-				? (currentIndex + 1) % containers.length
-				: (currentIndex - 1 + containers.length) % containers.length;
+        const resistance = 0.6;
+        notecard.style.transform = `translateX(${diff * resistance}px) rotate(${diff * 0.02}deg)`;
+    });
 
-			// Fly current card off in drag direction
-			const flyOutX = goingNext ? -window.innerWidth : window.innerWidth;
-			notecard.style.transition = 'transform 0.2s ease-in';
-			notecard.style.transform = `translateX(${flyOutX}px)`;
+    document.addEventListener("mouseup", () => {
+        if (!isDragging) return;
+        isDragging = false;
+        notecard.style.cursor = "";
 
-			setTimeout(() => {
-				// Position new card on opposite side
-				const enterFromX = goingNext ? window.innerWidth : -window.innerWidth;
-				notecard.style.transition = 'none';
-				notecard.style.transform = `translateX(${enterFromX}px)`;
+        const diff = dragCurrentX - dragStartX;
+        const threshold = 60;
 
-				showMug(newIndex, goingNext ? 'next' : 'prev', true);
+        if (Math.abs(diff) > threshold) {
+            // Drag left (diff < 0) = next, drag right (diff > 0) = prev
+            const goingNext = diff < 0;
+            const newIndex = goingNext
+                ? (currentIndex + 1) % containers.length
+                : (currentIndex - 1 + containers.length) % containers.length;
 
-				// Slide new card to center
-				requestAnimationFrame(() => {
-					requestAnimationFrame(() => {
-						notecard.style.transition = 'transform 0.2s ease-out';
-						notecard.style.transform = 'translateX(0)';
-					});
-				});
-			}, 200);
-		} else {
-			// Snap back
-			notecard.style.transition = 'transform 0.2s ease-out';
-			notecard.style.transform = 'translateX(0)';
-		}
-	});
+            // Fly current card off in drag direction
+            const flyOutX = goingNext ? -window.innerWidth : window.innerWidth;
+            notecard.style.transition = "transform 0.2s ease-in";
+            notecard.style.transform = `translateX(${flyOutX}px)`;
 
-	// Prevent click after drag
-	notecard.addEventListener('click', (e) => {
-		if (hasDragged) {
-			e.stopPropagation();
-			hasDragged = false;
-		}
-	}, true);
+            setTimeout(() => {
+                // Position new card on opposite side
+                const enterFromX = goingNext
+                    ? window.innerWidth
+                    : -window.innerWidth;
+                notecard.style.transition = "none";
+                notecard.style.transform = `translateX(${enterFromX}px)`;
+
+                showMug(newIndex, goingNext ? "next" : "prev", true);
+
+                // Slide new card to center
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        notecard.style.transition = "transform 0.2s ease-out";
+                        notecard.style.transform = "translateX(0)";
+                    });
+                });
+            }, 200);
+        } else {
+            // Snap back
+            notecard.style.transition = "transform 0.2s ease-out";
+            notecard.style.transform = "translateX(0)";
+        }
+    });
+
+    // Prevent click after drag
+    notecard.addEventListener(
+        "click",
+        (e) => {
+            if (hasDragged) {
+                e.stopPropagation();
+                hasDragged = false;
+            }
+        },
+        true,
+    );
 </script>

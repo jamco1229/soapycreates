@@ -1,487 +1,574 @@
 :root {
-  color-scheme: light;
+    color-scheme: light;
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
-  background: #2e3c3f;
-  font-family: "National Park", "Helvetica Neue", Arial, sans-serif;
-  overflow: hidden;
+    margin: 0;
+    min-height: 100vh;
+    background: #2e3c3f;
+    font-family: "National Park", "Helvetica Neue", Arial, sans-serif;
+    overflow: hidden;
 }
 
 .ceramicist-page {
-  position: relative;
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  isolation: isolate;
+    position: relative;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    isolation: isolate;
 }
 
 .ceramicist-mugs {
-	position: absolute;
-	inset: 0;
-	z-index: 1;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
 }
 
 .ceramicist-grid {
-	position: absolute;
-	inset: 6%;
-	z-index: 0;
-	background-image:
-		linear-gradient(rgba(120, 110, 100, 0.15) 1px, transparent 1px),
-		linear-gradient(90deg, rgba(120, 110, 100, 0.15) 1px, transparent 1px);
-	background-size: 12% 16%;
-	opacity: 0;
-	pointer-events: none;
+    position: absolute;
+    inset: 6%;
+    z-index: 0;
+    background-image:
+        linear-gradient(rgba(120, 110, 100, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(120, 110, 100, 0.15) 1px, transparent 1px);
+    background-size: 12% 16%;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .ceramicist-page.show-grid .ceramicist-grid {
-	opacity: 0.6;
+    opacity: 0.6;
 }
 
 .ceramicist-mug-container {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  display: grid;
-  place-items: center;
-  transition: transform 0.3s ease;
-  animation: ceramicist-fade-in 0.6s ease both;
-  opacity: 0;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: grid;
+    place-items: center;
+    transition: transform 0.3s ease;
+    animation: ceramicist-fade-in 0.6s ease both;
+    opacity: 0;
 }
 
 /* Keep everything hidden and paused until ready */
 .ceramicist-page:not(.is-ready) .ceramicist-mug-container,
 .ceramicist-page:not(.is-ready) .ceramicist-center,
 .ceramicist-page:not(.is-ready) .ceramicist-chrome {
-  animation-play-state: paused;
-  visibility: hidden;
+    animation-play-state: paused;
+    visibility: hidden;
 }
 
 .ceramicist-page.is-ready .ceramicist-mug-container,
 .ceramicist-page.is-ready .ceramicist-center,
 .ceramicist-page.is-ready .ceramicist-chrome {
-  visibility: visible;
+    visibility: visible;
 }
 
 .ceramicist-mug-container:hover {
-  transform: translate(-50%, -50%) scale(1.02);
+    transform: translate(-50%, -50%) scale(1.02);
 }
 
 .ceramicist-mug {
-  width: 100%;
-  height: auto;
-  display: block;
-  position: relative;
-  z-index: 1;
+    width: 100%;
+    height: auto;
+    display: block;
+    position: relative;
+    z-index: 1;
 }
 
 .ceramicist-mug-shadow-img {
-  position: absolute;
-  width: 100%;
-  height: auto;
-  top: -21%;
-  left: 0;
-  transform: scaleY(0.15) scaleX(0.9);
-  transform-origin: center bottom;
-  filter: blur(6px) brightness(0) opacity(0.35);
-  z-index: 0;
-  pointer-events: none;
+    position: absolute;
+    width: 100%;
+    height: auto;
+    top: -21%;
+    left: 0;
+    transform: scaleY(0.15) scaleX(0.9);
+    transform-origin: center bottom;
+    filter: blur(6px) brightness(0) opacity(0.35);
+    z-index: 0;
+    pointer-events: none;
 }
 
 .ceramicist-center {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  text-align: center;
-  padding: 1rem 1.5rem;
-  transition: opacity 0.6s ease;
-  animation: ceramicist-center-reveal 0.9s ease forwards;
-  animation-delay: 0.3s;
-  opacity: 0;
-  pointer-events: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 1rem 1.5rem;
+    transition: opacity 0.6s ease;
+    animation: ceramicist-center-reveal 0.9s ease forwards;
+    animation-delay: 0.3s;
+    opacity: 0;
+    pointer-events: none;
 }
 
-
 .ceramicist-wordmark {
-  max-width: min(60vw, 440px);
-  width: 100%;
-  height: auto;
-  color: white;
+    max-width: min(60vw, 440px);
+    width: 100%;
+    height: auto;
+    color: white;
 }
 
 .ceramicist-chrome {
-  position: fixed;
-  inset: 0;
-  z-index: 2;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.78rem;
-  color: white;
-  pointer-events: none;
-  transition: opacity 0.6s ease;
-  animation: ceramicist-chrome-reveal 0.9s ease forwards;
-  animation-delay: 0.35s;
-  opacity: 0;
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.78rem;
+    color: white;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+    animation: ceramicist-chrome-reveal 0.9s ease forwards;
+    animation-delay: 0.35s;
+    opacity: 0;
 }
 
 .ceramicist-chrome-tl,
 .ceramicist-chrome-tr,
 .ceramicist-chrome-bl,
 .ceramicist-chrome-br {
-  position: fixed;
-  margin: 0;
-  pointer-events: auto;
+    position: fixed;
+    margin: 0;
+    pointer-events: auto;
 }
 
 .ceramicist-chrome-tl {
-  top: 2.5rem;
-  left: 2.5rem;
-}
-
-.ceramicist-chrome-tr {
-  top: 2.5rem;
-  right: 2.5rem;
-  color: white;
-  text-decoration: none;
-}
-
-.ceramicist-chrome-bl {
-  bottom: 2.5rem;
-  left: 2.5rem;
+    top: 2.5rem;
+    left: 2.5rem;
 }
 
 .ceramicist-chrome-br {
-  bottom: 2.5rem;
-  right: 2.5rem;
+    color: white;
+    text-decoration: none;
+}
+
+.ceramicist-chrome-bl {
+    bottom: 2.5rem;
+    left: 2.5rem;
+}
+
+.ceramicist-chrome-br {
+    bottom: 2.5rem;
+    right: 2.5rem;
 }
 
 .ceramicist-chrome-tr {
-  color: white;
-  text-decoration: none;
+    color: white;
+    text-decoration: none;
 }
 
 .subtitle-dash {
-  opacity: 0.7;
+    opacity: 0.7;
 }
 
 .ceramicist-chrome-tr:hover {
-  opacity: 0.8;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+    opacity: 0.8;
+    text-decoration: underline;
+    text-underline-offset: 4px;
 }
 
 @media (max-width: 768px) {
-  body {
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
+    body {
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 
-  .ceramicist-page {
-    min-height: 120vh;
-    padding: 2rem 0;
-  }
+    .ceramicist-page {
+        min-height: 100vh;
+        padding: 0;
+    }
 
-  .ceramicist-mug-container {
-    opacity: 1;
-  }
+    .ceramicist-mug-container {
+        opacity: 1;
+    }
 
-  .ceramicist-center {
-    padding: 1.5rem 2rem;
-    border-radius: 24px;
-  }
+    .ceramicist-center {
+        padding: 1.5rem 2rem;
+        border-radius: 24px;
+    }
 
-  .ceramicist-wordmark {
-    max-width: min(50vw, 280px);
-  }
+    .ceramicist-wordmark {
+        max-width: min(50vw, 280px);
+    }
 
-  .ceramicist-chrome {
-    inset: 0;
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-  }
+    .ceramicist-chrome {
+        inset: 0;
+        font-size: 0.7rem;
+        letter-spacing: 0.1em;
+    }
 
-  .ceramicist-chrome-tl,
-  .ceramicist-chrome-tr {
-    top: 1.5rem;
-  }
+    .ceramicist-chrome-tl,
+    .ceramicist-chrome-tr {
+        top: 1.5rem;
+    }
 
-  .ceramicist-chrome-bl,
-  .ceramicist-chrome-br {
-    bottom: 1.5rem;
-  }
+    .ceramicist-chrome-bl,
+    .ceramicist-chrome-br {
+        bottom: 1.5rem;
+    }
 
-  .ceramicist-chrome-tl,
-  .ceramicist-chrome-bl {
-    left: 1.5rem;
-  }
+    .ceramicist-chrome-tl,
+    .ceramicist-chrome-bl {
+        left: 1.5rem;
+    }
 
-  .ceramicist-chrome-tr,
-  .ceramicist-chrome-br {
-    right: 1.5rem;
-  }
+    .ceramicist-chrome-tr,
+    .ceramicist-chrome-br {
+        right: 1.5rem;
+    }
 }
 
 @keyframes ceramicist-fade-in {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.94);
-  }
-  100% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.94);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
 }
 
 @keyframes ceramicist-center-reveal {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -48%);
-  }
-  100% {
-    opacity: 1;
-    transform: translate(-50%, -50%);
-  }
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -48%);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
 }
 
 @keyframes ceramicist-chrome-reveal {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 /* Notecard Modal Styles */
 .notecard-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(46, 60, 63, 0.6);
-  backdrop-filter: blur(4px);
-  display: grid;
-  place-items: center;
-  z-index: 100;
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity 0.3s ease,
-    visibility 0.3s ease;
+    position: fixed;
+    inset: 0;
+    background: rgba(46, 60, 63, 0.6);
+    backdrop-filter: blur(4px);
+    display: grid;
+    place-items: center;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+        opacity 0.3s ease,
+        visibility 0.3s ease;
 }
 
 .notecard-overlay.is-visible {
-  opacity: 1;
-  visibility: visible;
+    opacity: 1;
+    visibility: visible;
 }
 
 .notecard {
-  position: relative;
-  width: min(90vw, 380px);
-  background: #edd1b7;
-  border-radius: 4px;
-  padding: 1.5rem;
-  box-shadow:
-    0 4px 100px rgba(0, 0, 0, 0.12),
-    0 8px 24px rgba(0, 0, 0, 0.08);
-  transform: perspective(800px) translateY(60px) rotateX(-4deg) rotateZ(2deg);
-  opacity: 0;
-  transition:
-    transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1),
-    opacity 0.3s ease;
-  transform-style: preserve-3d;
+    position: relative;
+    width: min(90vw, 380px);
+    background: #edd1b7;
+    border-radius: 4px;
+    padding: 1.5rem;
+    box-shadow:
+        0 4px 100px rgba(0, 0, 0, 0.12),
+        0 8px 24px rgba(0, 0, 0, 0.08);
+    transform: perspective(800px) translateY(60px) rotateX(-4deg) rotateZ(2deg);
+    opacity: 0;
+    transition:
+        transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1),
+        opacity 0.3s ease;
+    transform-style: preserve-3d;
+}
+
+.notecard-paperclip {
+    position: absolute;
+    top: -15px;
+    left: 50px;
+    width: 20px;
+    height: 60px;
+    border: 2.5px solid #c0c0c0;
+    border-radius: 10px;
+    transform: rotate(-5deg);
+    background: transparent;
+    box-shadow:
+        inset 1px 1px 0 rgba(255, 255, 255, 0.2),
+        1px 2px 4px rgba(0, 0, 0, 0.12);
+    z-index: 10;
+}
+
+.notecard-paperclip::after {
+    content: "";
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 36px;
+    border: 2.5px solid #c0c0c0;
+    border-radius: 6px;
+    background: transparent;
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 /* Paper texture SVG overlay - subtle */
 .notecard-texture {
-  display: none;
+    display: none;
 }
 
 /* Vignette removed for cleaner design */
 
 .notecard-overlay.is-visible .notecard {
-  transform: perspective(800px) translateY(0) rotateX(1deg) rotateZ(-1deg);
-  opacity: 1;
+    transform: perspective(800px) translateY(0) rotateX(1deg) rotateZ(-1deg);
+    opacity: 1;
 }
 
 .notecard:hover {
-  transform: perspective(800px) translateY(-4px) rotateX(0deg) rotateZ(0deg);
+    transform: perspective(800px) translateY(-4px) rotateX(0deg) rotateZ(0deg);
 }
 
 /* Decorative tape strips - hidden for cleaner design */
 .notecard-tape {
-  display: none;
+    display: none;
 }
 
 .notecard {
-  cursor: grab;
-  user-select: none;
-  -webkit-user-select: none;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .notecard:active {
-  cursor: grabbing;
+    cursor: grabbing;
 }
 
 .notecard-image {
-  pointer-events: none;
-  -webkit-user-drag: none;
+    pointer-events: none;
+    -webkit-user-drag: none;
 }
 
 .notecard-image-container {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 3/4;
-  background: #2e3c3f;
-  border-radius: 3px;
-  overflow: hidden;
-  margin-bottom: 1rem;
-  box-shadow: 0 4px 100px rgba(0, 0, 0, 0.12);
-  transform: rotate(-4deg);
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: #2e3c3f;
+    border-radius: 3px;
+    top: -50px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 100px rgba(0, 0, 0, 0.12);
+    transform: rotate(-4deg);
 }
 
 .notecard-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .notecard-content {
-  text-align: center;
-  padding: 0.5rem 0;
+    text-align: center;
+    padding: 0.5rem 0;
 }
 
 .notecard-title {
-  margin: 0 0 0.25rem;
-  font-size: 1.1rem;
-  font-weight: 400;
-  color: #2e3c3f;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+    margin: 0 0 0.25rem;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: #2e3c3f;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
 }
 
 .notecard-date {
-  margin: 0;
-  font-size: 0.8rem;
-  color: #2e3c3f;
-  opacity: 0.7;
+    margin: 0;
+    font-size: 0.8rem;
+    color: #2e3c3f;
+    opacity: 0.7;
+}
+
+.notecard-description {
+    margin-top: 0.75rem;
+    text-align: left;
+}
+
+.notecard-description-body {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #2e3c3f;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.notecard-description-body.is-expanded {
+    display: block;
+    -webkit-line-clamp: initial;
+    overflow: visible;
+}
+
+.notecard-description-body p {
+    margin: 0 0 0.75rem;
+}
+
+.notecard-description-body p:last-child {
+    margin-bottom: 0;
+}
+
+.notecard-description-body a {
+    color: #2e3c3f;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.notecard-show-more {
+    margin-top: 0.5rem;
+    border: none;
+    background: none;
+    padding: 0;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #2e3c3f;
+    cursor: pointer;
+}
+
+.notecard-show-more:hover {
+    opacity: 0.7;
+}
+
+.notecard-descriptions {
+    display: none;
 }
 
 /* Cursor style for clickable mugs */
 .ceramicist-mug-container {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 /* Navigation arrows */
 .notecard-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.5rem;
-  color: rgba(80, 60, 40, 0.4);
-  cursor: pointer;
-  padding: 1rem;
-  transition:
-    color 0.2s ease,
-    transform 0.2s ease;
-  user-select: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    color: rgba(80, 60, 40, 0.4);
+    cursor: pointer;
+    padding: 1rem;
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+    user-select: none;
 }
 
 .notecard-arrow:hover {
-  color: rgba(80, 60, 40, 0.7);
+    color: rgba(80, 60, 40, 0.7);
 }
 
 .notecard-arrow-prev {
-  left: 1rem;
+    left: 1rem;
 }
 
 .notecard-arrow-prev:hover {
-  transform: translateY(-50%) translateX(-3px);
+    transform: translateY(-50%) translateX(-3px);
 }
 
 .notecard-arrow-next {
-  right: 1rem;
+    right: 1rem;
 }
 
 .notecard-arrow-next:hover {
-  transform: translateY(-50%) translateX(3px);
+    transform: translateY(-50%) translateX(3px);
 }
 
 /* Slide transition animations */
 .notecard.slide-out-left {
-  animation: slideOutLeft 0.2s ease-in forwards;
+    animation: slideOutLeft 0.2s ease-in forwards;
 }
 
 .notecard.slide-out-right {
-  animation: slideOutRight 0.2s ease-in forwards;
+    animation: slideOutRight 0.2s ease-in forwards;
 }
 
 .notecard.slide-in-left {
-  animation: slideInLeft 0.25s ease-out forwards;
+    animation: slideInLeft 0.25s ease-out forwards;
 }
 
 .notecard.slide-in-right {
-  animation: slideInRight 0.25s ease-out forwards;
+    animation: slideInRight 0.25s ease-out forwards;
 }
 
 @keyframes slideOutLeft {
-  from {
-    transform: perspective(800px) translateX(0) rotateY(0deg) rotateZ(-1deg);
-    opacity: 1;
-  }
-  to {
-    transform: perspective(800px) translateX(-30px) rotateY(8deg) rotateZ(-3deg);
-    opacity: 0;
-  }
+    from {
+        transform: perspective(800px) translateX(0) rotateY(0deg) rotateZ(-1deg);
+        opacity: 1;
+    }
+    to {
+        transform: perspective(800px) translateX(-30px) rotateY(8deg)
+            rotateZ(-3deg);
+        opacity: 0;
+    }
 }
 
 @keyframes slideOutRight {
-  from {
-    transform: perspective(800px) translateX(0) rotateY(0deg) rotateZ(-1deg);
-    opacity: 1;
-  }
-  to {
-    transform: perspective(800px) translateX(30px) rotateY(-8deg) rotateZ(3deg);
-    opacity: 0;
-  }
+    from {
+        transform: perspective(800px) translateX(0) rotateY(0deg) rotateZ(-1deg);
+        opacity: 1;
+    }
+    to {
+        transform: perspective(800px) translateX(30px) rotateY(-8deg)
+            rotateZ(3deg);
+        opacity: 0;
+    }
 }
 
 @keyframes slideInLeft {
-  from {
-    transform: perspective(800px) translateX(30px) rotateY(-8deg) rotateZ(3deg);
-    opacity: 0;
-  }
-  to {
-    transform: perspective(800px) translateX(0) rotateY(0deg) rotateZ(-1deg);
-    opacity: 1;
-  }
+    from {
+        transform: perspective(800px) translateX(30px) rotateY(-8deg)
+            rotateZ(3deg);
+        opacity: 0;
+    }
+    to {
+        transform: perspective(800px) translateX(0) rotateY(0deg) rotateZ(-1deg);
+        opacity: 1;
+    }
 }
 
 @keyframes slideInRight {
-  from {
-    transform: perspective(800px) translateX(-30px) rotateY(8deg) rotateZ(-3deg);
-    opacity: 0;
-  }
-  to {
-    transform: perspective(800px) translateX(0) rotateY(0deg) rotateZ(-1deg);
-    opacity: 1;
-  }
+    from {
+        transform: perspective(800px) translateX(-30px) rotateY(8deg)
+            rotateZ(-3deg);
+        opacity: 0;
+    }
+    to {
+        transform: perspective(800px) translateX(0) rotateY(0deg) rotateZ(-1deg);
+        opacity: 1;
+    }
 }
 
 @media (max-width: 768px) {
-  .notecard-arrow {
-    display: none;
-  }
-  .notecard {
-    width: min(92vw, 340px);
-    padding: 1.25rem;
-  }
+    .notecard-arrow {
+        display: none;
+    }
+    .notecard {
+        width: min(92vw, 340px);
+        padding: 1.25rem;
+    }
 
-  .notecard-tape {
-    width: 50px;
-    height: 20px;
-  }
+    .notecard-tape {
+        width: 50px;
+        height: 20px;
+    }
 }
