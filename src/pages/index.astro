@@ -374,6 +374,15 @@ const showGrid = false;
                 page.classList.add("is-ready");
             }
         });
+
+        // Preload all bgImages for smooth modal transitions
+        containers.forEach((container) => {
+            const bgImage = container.dataset.bgImage;
+            if (bgImage) {
+                const img = new Image();
+                img.src = bgImage;
+            }
+        });
     });
 
     // Notecard Modal Logic
