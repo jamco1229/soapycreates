@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "mugs/cowboymug.md",
+                "file": "bio/bio.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "cowboymug"
+              "title": "bio"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "mugs/cowboymug.md",
+                "file": "bio/bio.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for cowboymug"
+              "title": "Backlinks for bio"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "mugs/cowboymug.md",
+                "file": "bio/bio.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from cowboymug"
+              "title": "Outgoing links from bio"
             }
           },
           {
@@ -142,13 +142,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "mugs/cowboymug.md",
+                "file": "bio/bio.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of cowboymug"
+              "title": "Outline of bio"
             }
           }
         ]
@@ -171,6 +171,7 @@
   },
   "active": "763c27bb8fe6cd03",
   "lastOpenFiles": [
+    "mugs/cowboymug.md",
     "bio/bio.md",
     "bio",
     "mugs/coffeecup2.md",
@@ -181,7 +182,6 @@
     "mugs/flowercup.md",
     "mugs/flowercup2.md",
     "mugs/dottymug.md",
-    "mugs/cowboymug.md",
     "mugs/frame_02.md",
     "mugs/rockymug.md",
     "mugs/ratmug.md",

@@ -73,9 +73,9 @@ const showGrid = false;
             <button class="ceramicist-chrome-tl" type="button">
                 Sophie Banks
             </button>
-            <button class="ceramicist-shuffle" id="shuffle-btn">Shuffle</button>
             <p class="ceramicist-chrome-tr">ARTIST</p>
             <p class="ceramicist-chrome-bl">Norwich, NORFOLK UK</p>
+            <button class="ceramicist-shuffle" id="shuffle-btn">Shuffle</button>
             <a
                 href="https://instagram.com/soapycreates"
                 target="_blank"
@@ -168,7 +168,11 @@ const showGrid = false;
                     alt=""
                     class="notecard-image bio-image-back"
                 />
-                <img src="/pp.png" alt="" class="notecard-image bio-image-front" />
+                <img
+                    src="/pp.png"
+                    alt=""
+                    class="notecard-image bio-image-front"
+                />
             </div>
             <div class="notecard-content">
                 <p class="bio-title">Sophie Banks</p>
@@ -286,7 +290,8 @@ const showGrid = false;
         containers.forEach((container, index) => {
             const { top, left, size } = positions[index];
             if (animated) {
-                container.style.transition = 'top 0.4s ease, left 0.4s ease, width 0.4s ease';
+                container.style.transition =
+                    "top 0.4s ease, left 0.4s ease, width 0.4s ease";
             }
             container.style.top = `${top}%`;
             container.style.left = `${left}%`;
@@ -298,7 +303,7 @@ const showGrid = false;
         if (animated) {
             setTimeout(() => {
                 containers.forEach((container) => {
-                    container.style.transition = '';
+                    container.style.transition = "";
                 });
             }, 400);
         }
@@ -307,7 +312,7 @@ const showGrid = false;
     applyPositions();
 
     // Shuffle button
-    const shuffleBtn = document.getElementById('shuffle-btn');
+    const shuffleBtn = document.getElementById("shuffle-btn");
     let danceInterval = null;
     let holdTimeout = null;
     let isDancing = false;
@@ -315,24 +320,24 @@ const showGrid = false;
     function startDancing() {
         isDancing = true;
         containers.forEach((container) => {
-            container.classList.add('is-dancing');
+            container.classList.add("is-dancing");
         });
     }
 
     function stopDancing() {
         isDancing = false;
         containers.forEach((container) => {
-            container.classList.remove('is-dancing');
+            container.classList.remove("is-dancing");
         });
     }
 
-    shuffleBtn.addEventListener('mousedown', () => {
+    shuffleBtn.addEventListener("mousedown", () => {
         holdTimeout = setTimeout(() => {
             startDancing();
         }, 5000);
     });
 
-    shuffleBtn.addEventListener('mouseup', () => {
+    shuffleBtn.addEventListener("mouseup", () => {
         clearTimeout(holdTimeout);
         if (isDancing) {
             stopDancing();
@@ -342,7 +347,7 @@ const showGrid = false;
         }
     });
 
-    shuffleBtn.addEventListener('mouseleave', () => {
+    shuffleBtn.addEventListener("mouseleave", () => {
         clearTimeout(holdTimeout);
         if (isDancing) {
             stopDancing();
@@ -350,14 +355,14 @@ const showGrid = false;
     });
 
     // Touch support for dance
-    shuffleBtn.addEventListener('touchstart', (e) => {
+    shuffleBtn.addEventListener("touchstart", (e) => {
         e.preventDefault();
         holdTimeout = setTimeout(() => {
             startDancing();
         }, 5000);
     });
 
-    shuffleBtn.addEventListener('touchend', () => {
+    shuffleBtn.addEventListener("touchend", () => {
         clearTimeout(holdTimeout);
         if (isDancing) {
             stopDancing();
