@@ -19,9 +19,25 @@ body {
 }
 
 .ceramicist-mugs {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+}
+
+.ceramicist-grid {
+	position: absolute;
+	inset: 6%;
+	z-index: 0;
+	background-image:
+		linear-gradient(rgba(120, 110, 100, 0.15) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(120, 110, 100, 0.15) 1px, transparent 1px);
+	background-size: 12% 16%;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.ceramicist-page.show-grid .ceramicist-grid {
+	opacity: 0.6;
 }
 
 .ceramicist-mug-container {

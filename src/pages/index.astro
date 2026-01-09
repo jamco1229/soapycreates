@@ -6,10 +6,12 @@ import '../styles/ceramicist.css';
 const mugs = (await getCollection('mugs')).sort(
 	(a, b) => a.data.date.valueOf() - b.data.date.valueOf()
 );
+const showGrid = !import.meta.env.PROD;
 ---
 
 <Layout title="Sophie Banks | Soapy Creates">
-	<main class="ceramicist-page is-loading">
+	<main class={`ceramicist-page is-loading ${showGrid ? 'show-grid' : ''}`}>
+		{showGrid ? <div class="ceramicist-grid" aria-hidden="true"></div> : null}
 		<div class="ceramicist-mugs">
 			{mugs.map((mug, index) => (
 				<div
@@ -71,60 +73,76 @@ const mugs = (await getCollection('mugs')).sort(
 		document.querySelectorAll('.ceramicist-mug-container')
 	);
 
-	function isTooClose(pos1, pos2, minDistance) {
-		const dx = pos1.left - pos2.left;
-		const dy = pos1.top - pos2.top;
-		return Math.sqrt(dx * dx + dy * dy) < minDistance;
-	}
-
-	function generateRandomPositions(count) {
-		const positions = [];
+	function generatePositions(count) {
 		const isMobile = window.innerWidth <= 768;
-		const baseMinDistance = isMobile ? 12 : 14;
 
-		// Mobile: use taller page with more vertical spread
-		const topRange = isMobile ? 90 : 80;
-		const topOffset = isMobile ? 3 : 5;
-		const leftRange = isMobile ? 75 : 80;
-		const leftOffset = isMobile ? 10 : 5;
+		// Define zones around the center wordmark
+		// Each zone has: top range, left range, and max mugs allowed
+		const zones = isMobile ? [
+			// Mobile: stack vertically with mugs on sides
+			{ top: [3, 20], left: [5, 35], max: 2 },    // Top left
+			{ top: [3, 20], left: [65, 95], max: 2 },   // Top right
+			{ top: [25, 40], left: [3, 25], max: 1 },   // Mid-upper left
+			{ top: [25, 40], left: [75, 97], max: 1 },  // Mid-upper right
+			{ top: [60, 75], left: [3, 25], max: 1 },   // Mid-lower left
+			{ top: [60, 75], left: [75, 97], max: 1 },  // Mid-lower right
+			{ top: [78, 95], left: [5, 35], max: 2 },   // Bottom left
+			{ top: [78, 95], left: [65, 95], max: 2 },  // Bottom right
+		] : [
+			// Desktop: spread around center
+			{ top: [5, 22], left: [3, 22], max: 2 },    // Top left corner
+			{ top: [5, 22], left: [28, 48], max: 1 },   // Top left-center
+			{ top: [5, 22], left: [52, 72], max: 1 },   // Top right-center
+			{ top: [5, 22], left: [78, 97], max: 2 },   // Top right corner
+			{ top: [30, 50], left: [3, 18], max: 1 },   // Middle left upper
+			{ top: [50, 70], left: [3, 18], max: 1 },   // Middle left lower
+			{ top: [30, 50], left: [82, 97], max: 1 },  // Middle right upper
+			{ top: [50, 70], left: [82, 97], max: 1 },  // Middle right lower
+			{ top: [78, 95], left: [3, 22], max: 2 },   // Bottom left corner
+			{ top: [78, 95], left: [28, 48], max: 1 },  // Bottom left-center
+			{ top: [78, 95], left: [52, 72], max: 1 },  // Bottom right-center
+			{ top: [78, 95], left: [78, 97], max: 2 },  // Bottom right corner
+		];
 
-		// Center exclusion zone
-		const centerTop = isMobile ? [35, 62] : [25, 75];
-		const centerLeft = isMobile ? [10, 90] : [18, 82];
+		// Track how many mugs placed in each zone
+		const zoneCounts = zones.map(() => 0);
+		const positions = [];
+
+		// Size range
+		const minSize = isMobile ? 145 : 170;
+		const sizeRange = isMobile ? 40 : 55;
 
 		for (let i = 0; i < count; i++) {
-			let top = 0;
-			let left = 0;
-			let attempts = 0;
-			let validPosition = false;
+			// Find zones that aren't full, preferring emptier ones
+			const availableZones = zones
+				.map((zone, idx) => ({ zone, idx, count: zoneCounts[idx] }))
+				.filter(({ zone, count }) => count < zone.max)
+				.sort((a, b) => a.count - b.count);
 
-			do {
-				top = Math.random() * topRange + topOffset;
-				left = Math.random() * leftRange + leftOffset;
-				attempts += 1;
-
-				const inCenter = top > centerTop[0] && top < centerTop[1] && left > centerLeft[0] && left < centerLeft[1];
-				const tooCloseToOther = positions.some((pos) => {
-					const minDistance = baseMinDistance + (pos.size - 100) * 0.04;
-					return isTooClose({ top, left }, pos, minDistance);
-				});
-
-				validPosition = !inCenter && !tooCloseToOther;
-			} while (!validPosition && attempts < 200);
-
-			const size = isMobile ? (150 + Math.random() * 40) : (180 + Math.random() * 50);
-			if (!validPosition) {
-				const angle = (i / count) * Math.PI * 2;
-				top = 50 + Math.sin(angle) * (isMobile ? 42 : 40);
-				left = 50 + Math.cos(angle) * (isMobile ? 38 : 42);
+			if (availableZones.length === 0) {
+				// All zones full, cycle through
+				const idx = i % zones.length;
+				availableZones.push({ zone: zones[idx], idx, count: zoneCounts[idx] });
 			}
+
+			// Pick from least-filled zones with some randomness
+			const leastFilled = availableZones.filter(z => z.count === availableZones[0].count);
+			const { zone, idx } = leastFilled[Math.floor(Math.random() * leastFilled.length)];
+			zoneCounts[idx]++;
+
+			// Random position within zone with slight jitter
+			const top = zone.top[0] + Math.random() * (zone.top[1] - zone.top[0]);
+			const left = zone.left[0] + Math.random() * (zone.left[1] - zone.left[0]);
+			const size = minSize + Math.random() * sizeRange;
+
 			positions.push({ top, left, size });
 		}
 
-		return positions;
+		// Shuffle positions so same zones don't always animate together
+		return positions.sort(() => Math.random() - 0.5);
 	}
 
-	const positions = generateRandomPositions(containers.length);
+	const positions = generatePositions(containers.length);
 	containers.forEach((container, index) => {
 		const { top, left, size } = positions[index];
 		container.style.top = `${top}%`;
