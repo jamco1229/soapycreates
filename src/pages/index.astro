@@ -6,7 +6,7 @@ import '../styles/ceramicist.css';
 const mugs = (await getCollection('mugs')).sort(
 	(a, b) => a.data.date.valueOf() - b.data.date.valueOf()
 );
-const showGrid = !import.meta.env.PROD;
+const showGrid = false;
 ---
 
 <Layout title="Sophie Banks | Soapy Creates">
@@ -37,7 +37,7 @@ const showGrid = !import.meta.env.PROD;
 				class="ceramicist-wordmark"
 				loading="eager"
 			/>
-			<p class="ceramicist-subtitle">artist</p>
+			<p class="ceramicist-subtitle">ARTIST <span class="subtitle-dash">–</span> Norwich, NORFOLK UK <span class="subtitle-dash">–</span> <a href="https://instagram.com/soapycreates" target="_blank" rel="noopener" class="subtitle-link">INSTA</a></p>
 		</div>
 	</main>
 
@@ -295,25 +295,59 @@ const showGrid = !import.meta.env.PROD;
 		if (e.key === 'ArrowRight') goToNext();
 	});
 
-	// Swipe support for mobile
+	// Swipe support for mobile - card follows finger
 	let touchStartX = 0;
-	let touchEndX = 0;
+	let currentTouchX = 0;
+	let isSwiping = false;
 
 	notecard.addEventListener('touchstart', (e) => {
+		if (isAnimating) return;
 		touchStartX = e.changedTouches[0].screenX;
+		currentTouchX = touchStartX;
+		isSwiping = true;
+		notecard.style.transition = 'none';
+	}, { passive: true });
+
+	notecard.addEventListener('touchmove', (e) => {
+		if (!isSwiping) return;
+		currentTouchX = e.changedTouches[0].screenX;
+		const diff = currentTouchX - touchStartX;
+		// Move card with finger, with slight resistance
+		const resistance = 0.6;
+		notecard.style.transform = `translateX(${diff * resistance}px) rotate(${diff * 0.02}deg)`;
 	}, { passive: true });
 
 	notecard.addEventListener('touchend', (e) => {
-		touchEndX = e.changedTouches[0].screenX;
-		const diff = touchStartX - touchEndX;
-		if (Math.abs(diff) > 50) {
-			if (diff > 0) {
-				const newIndex = (currentIndex + 1) % containers.length;
-				showMug(newIndex, 'next', true);
-			} else {
-				const newIndex = (currentIndex - 1 + containers.length) % containers.length;
-				showMug(newIndex, 'prev', true);
-			}
+		if (!isSwiping) return;
+		isSwiping = false;
+		const diff = currentTouchX - touchStartX;
+		const threshold = 60;
+
+		notecard.style.transition = 'transform 0.25s ease-out';
+
+		if (Math.abs(diff) > threshold) {
+			// Swipe completed - animate off screen then show next
+			const direction = diff > 0 ? 'prev' : 'next';
+			const flyOut = diff > 0 ? '120%' : '-120%';
+			notecard.style.transform = `translateX(${flyOut}) rotate(${diff * 0.03}deg)`;
+
+			setTimeout(() => {
+				notecard.style.transition = 'none';
+				notecard.style.transform = `translateX(${diff > 0 ? '-80%' : '80%'})`;
+
+				const newIndex = direction === 'next'
+					? (currentIndex + 1) % containers.length
+					: (currentIndex - 1 + containers.length) % containers.length;
+				showMug(newIndex, direction, true);
+
+				requestAnimationFrame(() => {
+					notecard.style.transition = 'transform 0.25s ease-out';
+					notecard.style.transform = 'translateX(0) rotate(0deg)';
+				});
+			}, 200);
+		} else {
+			// Snap back
+			notecard.style.transform = 'translateX(0) rotate(0deg)';
 		}
 	}, { passive: true });
 
@@ -340,29 +374,41 @@ const showGrid = !import.meta.env.PROD;
 
 		if (Math.abs(diff) > 5) hasDragged = true;
 
-		const rotation = diff * 0.05;
-		const clampedRotation = Math.max(-10, Math.min(10, rotation));
-		notecard.style.transform = `perspective(800px) translateX(${diff * 0.4}px) rotateY(${clampedRotation}deg) rotateZ(${-1 + diff * 0.02}deg)`;
-		notecard.style.opacity = 1 - Math.abs(diff) * 0.002;
+		const resistance = 0.6;
+		notecard.style.transform = `translateX(${diff * resistance}px) rotate(${diff * 0.02}deg)`;
 	});
 
 	document.addEventListener('mouseup', () => {
 		if (!isDragging) return;
 		isDragging = false;
 		notecard.style.cursor = '';
-		notecard.style.transition = '';
-		notecard.style.transform = '';
-		notecard.style.opacity = '';
 
-		const diff = dragStartX - dragCurrentX;
-		if (Math.abs(diff) > 60) {
-			if (diff > 0) {
-				const newIndex = (currentIndex + 1) % containers.length;
-				showMug(newIndex, 'next', true);
-			} else {
-				const newIndex = (currentIndex - 1 + containers.length) % containers.length;
-				showMug(newIndex, 'prev', true);
-			}
+		const diff = dragCurrentX - dragStartX;
+		const threshold = 60;
+
+		notecard.style.transition = 'transform 0.25s ease-out';
+
+		if (Math.abs(diff) > threshold) {
+			const direction = diff > 0 ? 'prev' : 'next';
+			const flyOut = diff > 0 ? '120%' : '-120%';
+			notecard.style.transform = `translateX(${flyOut}) rotate(${diff * 0.03}deg)`;
+
+			setTimeout(() => {
+				notecard.style.transition = 'none';
+				notecard.style.transform = `translateX(${diff > 0 ? '-80%' : '80%'})`;
+
+				const newIndex = direction === 'next'
+					? (currentIndex + 1) % containers.length
+					: (currentIndex - 1 + containers.length) % containers.length;
+				showMug(newIndex, direction, true);
+
+				requestAnimationFrame(() => {
+					notecard.style.transition = 'transform 0.25s ease-out';
+					notecard.style.transform = 'translateX(0) rotate(0deg)';
+				});
+			}, 200);
+		} else {
+			notecard.style.transform = 'translateX(0) rotate(0deg)';
 		}
 	});
 
