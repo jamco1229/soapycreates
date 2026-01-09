@@ -24,22 +24,26 @@ body {
   z-index: 1;
 }
 
-.ceramicist-page.is-loading .ceramicist-mug-container,
-.ceramicist-page.is-loading .ceramicist-center {
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.96);
-}
-
 .ceramicist-mug-container {
   position: absolute;
   transform: translate(-50%, -50%);
   display: grid;
   place-items: center;
-  transition:
-    transform 0.6s ease,
-    opacity 0.6s ease;
-  animation: ceramicist-fade-in 0.7s ease forwards;
+  transition: transform 0.3s ease;
+  animation: ceramicist-fade-in 0.6s ease both;
   opacity: 0;
+}
+
+/* Keep everything hidden and paused until ready */
+.ceramicist-page:not(.is-ready) .ceramicist-mug-container,
+.ceramicist-page:not(.is-ready) .ceramicist-center {
+  animation-play-state: paused;
+  visibility: hidden;
+}
+
+.ceramicist-page.is-ready .ceramicist-mug-container,
+.ceramicist-page.is-ready .ceramicist-center {
+  visibility: visible;
 }
 
 .ceramicist-mug-container:hover {
@@ -81,10 +85,6 @@ body {
   opacity: 0;
 }
 
-.ceramicist-page:not(.is-ready) .ceramicist-mug-container,
-.ceramicist-page:not(.is-ready) .ceramicist-center {
-  animation-play-state: paused;
-}
 
 .ceramicist-wordmark {
   max-width: min(60vw, 440px);

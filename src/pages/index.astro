@@ -129,15 +129,27 @@ const mugs = (await getCollection('mugs')).sort(
 		container.style.top = `${top}%`;
 		container.style.left = `${left}%`;
 		container.style.width = `${size}px`;
-		container.style.animationDelay = `${0.25 + index * 0.08}s`;
+		container.style.animationDelay = `${0.3 + index * 0.08}s`;
 	});
 
-	requestAnimationFrame(() => {
-		const page = document.querySelector('.ceramicist-page');
-		if (page) {
-			page.classList.remove('is-loading');
-			page.classList.add('is-ready');
-		}
+	// Wait for all mug images to load before animating in
+	const mugImages = Array.from(document.querySelectorAll('.ceramicist-mug'));
+	const imagePromises = mugImages.map((img) => {
+		if (img.complete) return Promise.resolve();
+		return new Promise((resolve) => {
+			img.onload = resolve;
+			img.onerror = resolve;
+		});
+	});
+
+	Promise.all(imagePromises).then(() => {
+		requestAnimationFrame(() => {
+			const page = document.querySelector('.ceramicist-page');
+			if (page) {
+				page.classList.remove('is-loading');
+				page.classList.add('is-ready');
+			}
+		});
 	});
 
 	// Notecard Modal Logic
