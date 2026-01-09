@@ -111,7 +111,7 @@ const mugs = (await getCollection('mugs')).sort(
 				validPosition = !inCenter && !tooCloseToOther;
 			} while (!validPosition && attempts < 200);
 
-			const size = isMobile ? (110 + Math.random() * 30) : (155 + Math.random() * 45);
+			const size = isMobile ? (130 + Math.random() * 35) : (155 + Math.random() * 45);
 			if (!validPosition) {
 				const angle = (i / count) * Math.PI * 2;
 				top = 50 + Math.sin(angle) * (isMobile ? 42 : 40);
