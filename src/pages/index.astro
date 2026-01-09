@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { getCollection } from "astro:content";
-import "../styles/ceramicist.css";
+import "../styles/sophie.css";
 
 const mugs = (await getCollection("mugs")).sort(
     (a, b) => a.data.date.valueOf() - b.data.date.valueOf(),
@@ -13,18 +13,18 @@ const mugEntries = await Promise.all(
     }),
 );
 const bioEntry = (await getCollection("bio"))[0];
-const bioContent = bioEntry ? (await bioEntry.render()).Content : null;
+const BioContent = bioEntry ? (await bioEntry.render()).Content : null;
 const showGrid = false;
 ---
 
 <Layout title="Sophie Banks | Soapy Creates">
-    <main class={`ceramicist-page is-loading ${showGrid ? "show-grid" : ""}`}>
-        {showGrid ? <div class="ceramicist-grid" aria-hidden="true" /> : null}
-        <div class="ceramicist-mugs">
+    <main class={`sophie-page is-loading ${showGrid ? "show-grid" : ""}`}>
+        {showGrid ? <div class="sophie-grid" aria-hidden="true" /> : null}
+        <div class="sophie-mugs">
             {
                 mugEntries.map((mug, index) => (
                     <div
-                        class="ceramicist-mug-container"
+                        class="sophie-mug-container"
                         data-index={index}
                         data-title={mug.data.title}
                         data-date={mug.data.date.toLocaleDateString("en-US", {
@@ -40,14 +40,14 @@ const showGrid = false;
                         <img
                             src={mug.data.image}
                             alt=""
-                            class="ceramicist-mug-shadow-img"
+                            class="sophie-mug-shadow-img"
                             loading="eager"
                             aria-hidden="true"
                         />
                         <img
                             src={mug.data.image}
                             alt={mug.data.title}
-                            class="ceramicist-mug"
+                            class="sophie-mug"
                             loading="eager"
                         />
                     </div>
@@ -55,32 +55,32 @@ const showGrid = false;
             }
         </div>
 
-        <div class="ceramicist-center">
+        <div class="sophie-center">
             <button
-                class="ceramicist-wordmark-button"
+                class="sophie-wordmark-button"
                 type="button"
                 aria-label="Open bio"
             >
                 <img
                     src="/soapy wordmark.svg"
                     alt="SOAPY"
-                    class="ceramicist-wordmark"
+                    class="sophie-wordmark"
                     loading="eager"
                 />
             </button>
         </div>
-        <div class="ceramicist-chrome">
-            <button class="ceramicist-chrome-tl" type="button">
+        <div class="sophie-chrome">
+            <button class="sophie-chrome-tl" type="button">
                 Sophie Banks
             </button>
-            <p class="ceramicist-chrome-tr">ARTIST</p>
-            <p class="ceramicist-chrome-bl">Norwich, NORFOLK UK</p>
-            <button class="ceramicist-shuffle" id="shuffle-btn">Shuffle</button>
+            <p class="sophie-chrome-tr">ARTIST</p>
+            <p class="sophie-chrome-bl">Norwich, NORFOLK UK</p>
+            <button class="sophie-shuffle" id="shuffle-btn">Shuffle</button>
             <a
                 href="https://instagram.com/soapycreates"
                 target="_blank"
                 rel="noopener"
-                class="ceramicist-chrome-br"
+                class="sophie-chrome-br"
             >
                 @SOAPYCREATES
             </a>
@@ -177,7 +177,7 @@ const showGrid = false;
             <div class="notecard-content">
                 <p class="bio-title">Sophie Banks</p>
                 <div class="bio-content">
-                    {bioContent ? <bioContent /> : null}
+                    {BioContent ? <BioContent /> : null}
                 </div>
             </div>
         </div>
@@ -186,7 +186,7 @@ const showGrid = false;
 
 <script type="module">
     const containers = Array.from(
-        document.querySelectorAll(".ceramicist-mug-container"),
+        document.querySelectorAll(".sophie-mug-container"),
     );
 
     function generatePositions(count) {
@@ -201,7 +201,7 @@ const showGrid = false;
             padding: { top: 8, bottom: 8, left: 5, right: 5 },
             excludedCells: [7], // center cell (row 2, col 1)
             jitterPercent: 0.20,
-            sizes: { 0: [120, 140], 1: [135, 155], 2: [145, 165], 3: [150, 170], 4: [155, 180] }
+            sizes: { 0: [95, 115], 1: [105, 125], 2: [110, 130], 3: [115, 135], 4: [120, 140] }
         } : {
             cols: 5,
             rows: 4,
@@ -373,7 +373,7 @@ const showGrid = false;
     });
 
     // Wait for all mug images to load before animating in
-    const mugImages = Array.from(document.querySelectorAll(".ceramicist-mug"));
+    const mugImages = Array.from(document.querySelectorAll(".sophie-mug"));
     const imagePromises = mugImages.map((img) => {
         if (img.complete) return Promise.resolve();
         return new Promise((resolve) => {
@@ -384,7 +384,7 @@ const showGrid = false;
 
     Promise.all(imagePromises).then(() => {
         requestAnimationFrame(() => {
-            const page = document.querySelector(".ceramicist-page");
+            const page = document.querySelector(".sophie-page");
             if (page) {
                 page.classList.remove("is-loading");
                 page.classList.add("is-ready");
@@ -415,10 +415,10 @@ const showGrid = false;
         document.querySelectorAll(".notecard-description-source"),
     );
     const bioOverlay = document.getElementById("bio-overlay");
-    const bioCard = bioOverlay?.querySelector(".bio-card");
+    const bioCard = bioOverlay?.querySelector(".bio-notecard");
     const bioTriggers = Array.from(
         document.querySelectorAll(
-            ".ceramicist-wordmark-button, .ceramicist-chrome-tl",
+            ".sophie-wordmark-button, .sophie-chrome-tl",
         ),
     );
 

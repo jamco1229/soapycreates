@@ -10,7 +10,7 @@ body {
     overflow: hidden;
 }
 
-.ceramicist-page {
+.sophie-page {
     position: relative;
     min-height: 100vh;
     display: grid;
@@ -18,14 +18,14 @@ body {
     isolation: isolate;
 }
 
-.ceramicist-mugs {
+.sophie-mugs {
     position: absolute;
     inset: 0;
     z-index: 1;
     overflow: hidden;
 }
 
-.ceramicist-grid {
+.sophie-grid {
     position: absolute;
     inset: 6%;
     z-index: 0;
@@ -37,39 +37,39 @@ body {
     pointer-events: none;
 }
 
-.ceramicist-page.show-grid .ceramicist-grid {
+.sophie-page.show-grid .sophie-grid {
     opacity: 0.6;
 }
 
-.ceramicist-mug-container {
+.sophie-mug-container {
     position: absolute;
     transform: translate(-50%, -50%);
     display: grid;
     place-items: center;
     transition: transform 0.3s ease;
-    animation: ceramicist-fade-in 0.6s ease both;
+    animation: sophie-fade-in 0.6s ease both;
     opacity: 0;
 }
 
 /* Keep everything hidden and paused until ready */
-.ceramicist-page:not(.is-ready) .ceramicist-mug-container,
-.ceramicist-page:not(.is-ready) .ceramicist-center,
-.ceramicist-page:not(.is-ready) .ceramicist-chrome {
+.sophie-page:not(.is-ready) .sophie-mug-container,
+.sophie-page:not(.is-ready) .sophie-center,
+.sophie-page:not(.is-ready) .sophie-chrome {
     animation-play-state: paused;
     visibility: hidden;
 }
 
-.ceramicist-page.is-ready .ceramicist-mug-container,
-.ceramicist-page.is-ready .ceramicist-center,
-.ceramicist-page.is-ready .ceramicist-chrome {
+.sophie-page.is-ready .sophie-mug-container,
+.sophie-page.is-ready .sophie-center,
+.sophie-page.is-ready .sophie-chrome {
     visibility: visible;
 }
 
-.ceramicist-mug-container:hover {
+.sophie-mug-container:hover {
     transform: translate(-50%, -50%) scale(1.02);
 }
 
-.ceramicist-mug {
+.sophie-mug {
     width: 100%;
     height: auto;
     display: block;
@@ -77,7 +77,7 @@ body {
     z-index: 1;
 }
 
-.ceramicist-mug-shadow-img {
+.sophie-mug-shadow-img {
     position: absolute;
     width: 100%;
     height: auto;
@@ -90,7 +90,7 @@ body {
     pointer-events: none;
 }
 
-.ceramicist-center {
+.sophie-center {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -101,13 +101,13 @@ body {
     text-align: center;
     padding: 1rem 1.5rem;
     transition: opacity 0.6s ease;
-    animation: ceramicist-center-reveal 0.9s ease forwards;
+    animation: sophie-center-reveal 0.9s ease forwards;
     animation-delay: 0.3s;
     opacity: 0;
     pointer-events: auto;
 }
 
-.ceramicist-wordmark-button {
+.sophie-wordmark-button {
     border: none;
     background: none;
     padding: 0;
@@ -115,14 +115,14 @@ body {
     pointer-events: auto;
 }
 
-.ceramicist-wordmark {
+.sophie-wordmark {
     max-width: min(60vw, 440px);
     width: 100%;
     height: auto;
     color: white;
 }
 
-.ceramicist-chrome {
+.sophie-chrome {
     position: fixed;
     inset: 0;
     z-index: 2;
@@ -132,21 +132,21 @@ body {
     color: white;
     pointer-events: none;
     transition: opacity 0.6s ease;
-    animation: ceramicist-chrome-reveal 0.9s ease forwards;
+    animation: sophie-chrome-reveal 0.9s ease forwards;
     animation-delay: 0.35s;
     opacity: 0;
 }
 
-.ceramicist-chrome-tl,
-.ceramicist-chrome-tr,
-.ceramicist-chrome-bl,
-.ceramicist-chrome-br {
+.sophie-chrome-tl,
+.sophie-chrome-tr,
+.sophie-chrome-bl,
+.sophie-chrome-br {
     position: fixed;
     margin: 0;
     pointer-events: auto;
 }
 
-.ceramicist-chrome-tl {
+.sophie-chrome-tl {
     top: 2.5rem;
     left: 2.5rem;
     border: none;
@@ -158,22 +158,22 @@ body {
     cursor: pointer;
 }
 
-.ceramicist-chrome-br {
+.sophie-chrome-br {
     color: white;
     text-decoration: none;
 }
 
-.ceramicist-chrome-bl {
+.sophie-chrome-bl {
     bottom: 2.5rem;
     left: 2.5rem;
 }
 
-.ceramicist-chrome-br {
+.sophie-chrome-br {
     bottom: 2.5rem;
     right: 2.5rem;
 }
 
-.ceramicist-chrome-tr {
+.sophie-chrome-tr {
     top: 2.5rem;
     color: white;
     right: 2.5rem;
@@ -184,19 +184,13 @@ body {
     opacity: 0.7;
 }
 
-.ceramicist-chrome-tr:hover {
+.sophie-chrome-tl:hover {
     opacity: 0.8;
     text-decoration: underline;
     text-underline-offset: 4px;
 }
 
-.ceramicist-chrome-tl:hover {
-    opacity: 0.8;
-    text-decoration: underline;
-    text-underline-offset: 4px;
-}
-
-.ceramicist-shuffle {
+.sophie-shuffle {
     position: fixed;
     bottom: 2.5rem;
     left: 50%;
@@ -214,7 +208,7 @@ body {
     pointer-events: auto;
 }
 
-.ceramicist-shuffle:hover {
+.sophie-shuffle:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.8);
 }
@@ -225,76 +219,77 @@ body {
         height: 100vh;
     }
 
-    .ceramicist-page {
+    .sophie-page {
         height: 100vh;
         min-height: 100vh;
         padding: 0;
     }
 
-    .ceramicist-mug-container {
+    .sophie-mug-container {
         opacity: 1;
     }
 
-    .ceramicist-center {
+    .sophie-center {
         padding: 1.5rem 2rem;
         border-radius: 24px;
     }
 
-    .ceramicist-wordmark {
-        max-width: min(50vw, 280px);
+    .sophie-wordmark {
+        max-width: min(45vw, 220px);
     }
 
-    .ceramicist-chrome {
+    .sophie-chrome {
         inset: 0;
-        font-size: 0.7rem;
-        letter-spacing: 0.1em;
+        font-size: 0.55rem;
+        letter-spacing: 0.08em;
+        opacity: 0.85;
     }
 
-    .ceramicist-chrome-tl,
-    .ceramicist-chrome-tr {
-        top: 1.5rem;
+    .sophie-chrome-tl,
+    .sophie-chrome-tr {
+        top: 1rem;
     }
 
-    .ceramicist-chrome-bl,
-    .ceramicist-chrome-br {
-        bottom: 1.5rem;
+    .sophie-chrome-bl,
+    .sophie-chrome-br {
+        bottom: 1rem;
     }
 
-    .ceramicist-chrome-tl,
-    .ceramicist-chrome-bl {
-        left: 1.5rem;
+    .sophie-chrome-tl,
+    .sophie-chrome-bl {
+        left: 1rem;
     }
 
-    .ceramicist-chrome-tr,
-    .ceramicist-chrome-br {
-        right: 1.5rem;
+    .sophie-chrome-tr,
+    .sophie-chrome-br {
+        right: 1rem;
     }
 
-    .ceramicist-shuffle {
-        bottom: 1.5rem;
-        font-size: 0.7rem;
-        padding: 0.35rem 0.8rem;
+    .sophie-shuffle {
+        bottom: 1rem;
+        font-size: 0.55rem;
+        padding: 0.3rem 0.7rem;
     }
 }
 
-.ceramicist-mug-container.is-dancing {
-    animation: ceramicist-dance 0.5s ease-in-out infinite !important;
+.sophie-mug-container.is-dancing {
+    animation: sophie-dance 0.5s ease-in-out infinite !important;
     opacity: 1 !important;
 }
 
-.ceramicist-mug-container.is-dancing:nth-child(2n) {
+.sophie-mug-container.is-dancing:nth-child(2n) {
     animation-delay: 0.08s;
 }
 
-.ceramicist-mug-container.is-dancing:nth-child(3n) {
+.sophie-mug-container.is-dancing:nth-child(3n) {
     animation-delay: 0.15s;
 }
 
-.ceramicist-mug-container.is-dancing:nth-child(4n) {
+.sophie-mug-container.is-dancing:nth-child(4n) {
     animation-delay: 0.22s;
 }
 
-@keyframes ceramicist-dance {
+@keyframes sophie-dance {
     0%,
     100% {
         transform: translate(-50%, -50%) rotate(-1deg);
@@ -306,7 +301,7 @@ body {
     }
 }
 
-@keyframes ceramicist-fade-in {
+@keyframes sophie-fade-in {
     0% {
         opacity: 0;
         transform: translate(-50%, -50%) scale(0.94);
@@ -317,7 +312,7 @@ body {
     }
 }
 
-@keyframes ceramicist-center-reveal {
+@keyframes sophie-center-reveal {
     0% {
         opacity: 0;
         transform: translate(-50%, -48%);
@@ -328,7 +323,7 @@ body {
     }
 }
 
-@keyframes ceramicist-chrome-reveal {
+@keyframes sophie-chrome-reveal {
     0% {
         opacity: 0;
     }
@@ -572,21 +567,30 @@ body {
 .bio-image-container {
     overflow: visible;
     background: transparent;
+    top: -40px;
+}
+
+.bio-image-container .notecard-paperclip {
+    top: -15px;
+    left: 50px;
+    transform: rotate(-5deg);
+    clip-path: inset(12px 0 0 0);
 }
 
 .bio-image-back {
     position: absolute;
     top: 0;
     left: 0;
-    transform: translate(12px, -10px) rotate(4deg);
-    filter: saturate(0.9);
+    transform: translate(15px, -12px) rotate(5deg);
+    filter: saturate(0.85) brightness(0.97);
     z-index: 1;
 }
 
 .bio-image-front {
     position: relative;
     z-index: 2;
-    transform: rotate(-2deg);
+    transform: rotate(-3deg);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .bio-notecard .notecard-content {
@@ -614,7 +618,7 @@ body {
 }
 
 /* Cursor style for clickable mugs */
-.ceramicist-mug-container {
+.sophie-mug-container {
     cursor: pointer;
 }
 
