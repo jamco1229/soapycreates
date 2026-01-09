@@ -188,86 +188,97 @@ const showGrid = false;
     function generatePositions(count) {
         const isMobile = window.innerWidth <= 768;
 
-        // Define zones around the center wordmark
-        // Each zone has: top range, left range, and max mugs allowed
-        const zones = isMobile
-            ? [
-                  // Mobile: tighter center exclusion, mugs closer to wordmark
-                  { top: [4, 16], left: [5, 35], max: 1 }, // Top left
-                  { top: [4, 16], left: [40, 60], max: 1 }, // Top center
-                  { top: [4, 16], left: [65, 95], max: 1 }, // Top right
-                  { top: [18, 32], left: [3, 30], max: 1 }, // Upper-mid left
-                  { top: [18, 32], left: [70, 97], max: 1 }, // Upper-mid right
-                  { top: [36, 48], left: [3, 25], max: 1 }, // Mid-upper left (closer to center)
-                  { top: [36, 48], left: [75, 97], max: 1 }, // Mid-upper right (closer to center)
-                  { top: [55, 67], left: [3, 25], max: 1 }, // Mid-lower left (closer to center)
-                  { top: [55, 67], left: [75, 97], max: 1 }, // Mid-lower right (closer to center)
-                  { top: [70, 82], left: [3, 30], max: 1 }, // Lower-mid left
-                  { top: [70, 82], left: [70, 97], max: 1 }, // Lower-mid right
-                  { top: [85, 96], left: [15, 45], max: 1 }, // Bottom left
-                  { top: [85, 96], left: [55, 85], max: 1 }, // Bottom right
-              ]
-            : [
-                  // Desktop: spread around center
-                  { top: [5, 22], left: [3, 22], max: 2 }, // Top left corner
-                  { top: [5, 22], left: [28, 48], max: 1 }, // Top left-center
-                  { top: [5, 22], left: [52, 72], max: 1 }, // Top right-center
-                  { top: [5, 22], left: [78, 97], max: 2 }, // Top right corner
-                  { top: [30, 50], left: [3, 18], max: 1 }, // Middle left upper
-                  { top: [50, 70], left: [3, 18], max: 1 }, // Middle left lower
-                  { top: [30, 50], left: [82, 97], max: 1 }, // Middle right upper
-                  { top: [50, 70], left: [82, 97], max: 1 }, // Middle right lower
-                  { top: [78, 95], left: [3, 22], max: 2 }, // Bottom left corner
-                  { top: [78, 95], left: [28, 48], max: 1 }, // Bottom left-center
-                  { top: [78, 95], left: [52, 72], max: 1 }, // Bottom right-center
-                  { top: [78, 95], left: [78, 97], max: 2 }, // Bottom right corner
-              ];
+        // Grid configuration: cells like a chessboard
+        // Mobile: 3 cols × 5 rows, center cell (7) reserved for wordmark
+        // Desktop: 5 cols × 4 rows, middle column cells (7, 12) reserved
+        const config = isMobile ? {
+            cols: 3,
+            rows: 5,
+            padding: { top: 8, bottom: 8, left: 5, right: 5 },
+            excludedCells: [7], // center cell (row 2, col 1)
+            jitterPercent: 0.20,
+            sizes: { 0: [120, 140], 1: [135, 155], 2: [145, 165], 3: [150, 170], 4: [155, 180] }
+        } : {
+            cols: 5,
+            rows: 4,
+            padding: { top: 10, bottom: 10, left: 5, right: 5 },
+            excludedCells: [7, 12], // middle column, rows 1-2
+            jitterPercent: 0.15,
+            sizes: { 0: [160, 190], 1: [190, 220], 2: [210, 240], 3: [220, 260] }
+        };
 
-        // Track how many mugs placed in each zone
-        const zoneCounts = zones.map(() => 0);
-        const positions = [];
+        // Calculate cell dimensions
+        const availableWidth = 100 - config.padding.left - config.padding.right;
+        const availableHeight = 100 - config.padding.top - config.padding.bottom;
+        const cellWidth = availableWidth / config.cols;
+        const cellHeight = availableHeight / config.rows;
 
-        // Size range
-        const minSize = isMobile ? 145 : 200;
-        const sizeRange = isMobile ? 40 : 70;
-
-        for (let i = 0; i < count; i++) {
-            // Find zones that aren't full, preferring emptier ones
-            const availableZones = zones
-                .map((zone, idx) => ({ zone, idx, count: zoneCounts[idx] }))
-                .filter(({ zone, count }) => count < zone.max)
-                .sort((a, b) => a.count - b.count);
-
-            if (availableZones.length === 0) {
-                // All zones full, cycle through
-                const idx = i % zones.length;
-                availableZones.push({
-                    zone: zones[idx],
-                    idx,
-                    count: zoneCounts[idx],
-                });
-            }
-
-            // Pick from least-filled zones with some randomness
-            const leastFilled = availableZones.filter(
-                (z) => z.count === availableZones[0].count,
-            );
-            const { zone, idx } =
-                leastFilled[Math.floor(Math.random() * leastFilled.length)];
-            zoneCounts[idx]++;
-
-            // Random position within zone with slight jitter
-            const top =
-                zone.top[0] + Math.random() * (zone.top[1] - zone.top[0]);
-            const left =
-                zone.left[0] + Math.random() * (zone.left[1] - zone.left[0]);
-            const size = minSize + Math.random() * sizeRange;
-
-            positions.push({ top, left, size });
+        // Build list of available cells
+        const availableCells = [];
+        for (let i = 0; i < config.cols * config.rows; i++) {
+            if (!config.excludedCells.includes(i)) availableCells.push(i);
         }
 
-        // Shuffle positions so same zones don't always animate together
-        return positions.sort(() => Math.random() - 0.5);
+        // Helper to check if two cells are adjacent (including diagonals)
+        function areAdjacent(cellA, cellB) {
+            const rowA = Math.floor(cellA / config.cols);
+            const colA = cellA % config.cols;
+            const rowB = Math.floor(cellB / config.cols);
+            const colB = cellB % config.cols;
+            return Math.abs(rowA - rowB) <= 1 && Math.abs(colA - colB) <= 1;
+        }
+
+        // Select cells preferring non-adjacent placement
+        const selectedCells = [];
+        const remainingCells = [...availableCells].sort(() => Math.random() - 0.5);
+
+        for (let i = 0; i < count; i++) {
+            // Find cells not adjacent to any already selected
+            const nonAdjacent = remainingCells.filter(cell =>
+                !selectedCells.some(selected => areAdjacent(cell, selected))
+            );
+
+            // Prefer non-adjacent, fallback to any remaining
+            const pool = nonAdjacent.length > 0 ? nonAdjacent : remainingCells;
+            const chosenIndex = Math.floor(Math.random() * pool.length);
+            const chosen = pool[chosenIndex];
+
+            selectedCells.push(chosen);
+            remainingCells.splice(remainingCells.indexOf(chosen), 1);
+
+            // If we've used all cells, refill for overflow
+            if (remainingCells.length === 0) {
+                remainingCells.push(...availableCells.sort(() => Math.random() - 0.5));
+            }
+        }
+
+        // Generate positions
+        const positions = [];
+        for (let i = 0; i < count; i++) {
+            const cellIndex = selectedCells[i];
+            const col = cellIndex % config.cols;
+            const row = Math.floor(cellIndex / config.cols);
+
+            // Cell center in percentages
+            const centerX = config.padding.left + (col + 0.5) * cellWidth;
+            const centerY = config.padding.top + (row + 0.5) * cellHeight;
+
+            // Apply jitter within cell bounds
+            const jitterX = (Math.random() - 0.5) * cellWidth * config.jitterPercent;
+            const jitterY = (Math.random() - 0.5) * cellHeight * config.jitterPercent;
+
+            // Size based on row (larger toward bottom for depth)
+            const sizeRange = config.sizes[row];
+            const size = sizeRange[0] + Math.random() * (sizeRange[1] - sizeRange[0]);
+
+            positions.push({
+                top: centerY + jitterY,
+                left: centerX + jitterX,
+                size
+            });
+        }
+
+        return positions;
     }
 
     function applyPositions(animated = false) {
