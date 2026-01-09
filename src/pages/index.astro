@@ -160,14 +160,21 @@ const showGrid = false;
         }
     </div>
     <div class="bio-overlay" id="bio-overlay" aria-hidden="true">
-        <div class="bio-card" role="dialog" aria-modal="true">
-            <div class="bio-images">
-                <img src="/pp.png" alt="" class="bio-image bio-image-front" />
-                <img src="/pp-2.png" alt="" class="bio-image bio-image-back" />
+        <div class="notecard bio-notecard" role="dialog" aria-modal="true">
+            <div class="notecard-image-container bio-image-container">
+                <div class="notecard-paperclip" aria-hidden="true"></div>
+                <img
+                    src="/pp-2.png"
+                    alt=""
+                    class="notecard-image bio-image-back"
+                />
+                <img src="/pp.png" alt="" class="notecard-image bio-image-front" />
             </div>
-            <div class="bio-content">
+            <div class="notecard-content">
                 <p class="bio-title">Sophie Banks</p>
-                {bioContent ? <bioContent /> : null}
+                <div class="bio-content">
+                    {bioContent ? <bioContent /> : null}
+                </div>
             </div>
         </div>
     </div>
