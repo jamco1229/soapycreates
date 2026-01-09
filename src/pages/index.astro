@@ -21,8 +21,8 @@ const mugs = (await getCollection('mugs')).sort(
 					role="button"
 					tabindex="0"
 				>
+					<img src={mug.data.image} alt="" class="ceramicist-mug-shadow-img" loading="eager" aria-hidden="true" />
 					<img src={mug.data.image} alt={mug.data.title} class="ceramicist-mug" loading="eager" />
-					<span class="ceramicist-mug-shadow"></span>
 				</div>
 			))}
 		</div>
@@ -78,7 +78,18 @@ const mugs = (await getCollection('mugs')).sort(
 
 	function generateRandomPositions(count) {
 		const positions = [];
-		const baseMinDistance = 14;
+		const isMobile = window.innerWidth <= 768;
+		const baseMinDistance = isMobile ? 12 : 14;
+
+		// Mobile: use taller page with more vertical spread
+		const topRange = isMobile ? 90 : 80;
+		const topOffset = isMobile ? 3 : 5;
+		const leftRange = isMobile ? 75 : 80;
+		const leftOffset = isMobile ? 10 : 5;
+
+		// Center exclusion zone
+		const centerTop = isMobile ? [38, 58] : [28, 72];
+		const centerLeft = isMobile ? [15, 85] : [22, 78];
 
 		for (let i = 0; i < count; i++) {
 			let top = 0;
@@ -87,24 +98,24 @@ const mugs = (await getCollection('mugs')).sort(
 			let validPosition = false;
 
 			do {
-				top = Math.random() * 80 + 5;
-				left = Math.random() * 80 + 5;
+				top = Math.random() * topRange + topOffset;
+				left = Math.random() * leftRange + leftOffset;
 				attempts += 1;
 
-				const inCenter = top > 28 && top < 72 && left > 22 && left < 78;
+				const inCenter = top > centerTop[0] && top < centerTop[1] && left > centerLeft[0] && left < centerLeft[1];
 				const tooCloseToOther = positions.some((pos) => {
-					const minDistance = baseMinDistance + (pos.size - 140) * 0.05;
+					const minDistance = baseMinDistance + (pos.size - 100) * 0.04;
 					return isTooClose({ top, left }, pos, minDistance);
 				});
 
 				validPosition = !inCenter && !tooCloseToOther;
 			} while (!validPosition && attempts < 200);
 
-			const size = 155 + Math.random() * 45;
+			const size = isMobile ? (110 + Math.random() * 30) : (155 + Math.random() * 45);
 			if (!validPosition) {
 				const angle = (i / count) * Math.PI * 2;
-				top = 50 + Math.sin(angle) * 40;
-				left = 50 + Math.cos(angle) * 42;
+				top = 50 + Math.sin(angle) * (isMobile ? 42 : 40);
+				left = 50 + Math.cos(angle) * (isMobile ? 38 : 42);
 			}
 			positions.push({ top, left, size });
 		}
