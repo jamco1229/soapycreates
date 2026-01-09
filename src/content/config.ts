@@ -6,6 +6,7 @@ const mugs = defineCollection({
 		title: z.string(),
 		date: z.date(),
 		image: z.string(),
+		bgImage: z.string(),
 	}),
 });
 

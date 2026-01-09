@@ -18,6 +18,7 @@ const mugs = (await getCollection('mugs')).sort(
 					data-title={mug.data.title}
 					data-date={mug.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
 					data-image={mug.data.image}
+					data-bg-image={mug.data.bgImage}
 					role="button"
 					tabindex="0"
 				>
@@ -168,7 +169,7 @@ const mugs = (await getCollection('mugs')).sort(
 		const container = containers[index];
 		const title = container.dataset.title;
 		const date = container.dataset.date;
-		const image = container.dataset.image;
+		const bgImage = container.dataset.bgImage;
 
 		if (direction && !isAnimating) {
 			isAnimating = true;
@@ -176,7 +177,7 @@ const mugs = (await getCollection('mugs')).sort(
 
 			if (fromDrag) {
 				// Skip slide-out, user already dragged it away
-				notecardImage.src = image;
+				notecardImage.src = bgImage;
 				notecardImage.alt = title;
 				notecardTitle.textContent = title;
 				notecardDate.textContent = date;
@@ -196,7 +197,7 @@ const mugs = (await getCollection('mugs')).sort(
 				notecard.classList.add(slideOut);
 
 				setTimeout(() => {
-					notecardImage.src = image;
+					notecardImage.src = bgImage;
 					notecardImage.alt = title;
 					notecardTitle.textContent = title;
 					notecardDate.textContent = date;
@@ -212,7 +213,7 @@ const mugs = (await getCollection('mugs')).sort(
 				}, 220);
 			}
 		} else {
-			notecardImage.src = image;
+			notecardImage.src = bgImage;
 			notecardImage.alt = title;
 			notecardTitle.textContent = title;
 			notecardDate.textContent = date;
