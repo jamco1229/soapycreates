@@ -60,6 +60,8 @@ const mugs = (await getCollection('mugs')).sort(
 			<div class="notecard-tape notecard-tape-left"></div>
 			<div class="notecard-tape notecard-tape-right"></div>
 		</div>
+		<span class="notecard-arrow notecard-arrow-prev" aria-label="Previous">&larr;</span>
+		<span class="notecard-arrow notecard-arrow-next" aria-label="Next">&rarr;</span>
 	</div>
 </Layout>
 
@@ -98,7 +100,7 @@ const mugs = (await getCollection('mugs')).sort(
 				validPosition = !inCenter && !tooCloseToOther;
 			} while (!validPosition && attempts < 200);
 
-			const size = 140 + Math.random() * 40;
+			const size = 155 + Math.random() * 45;
 			if (!validPosition) {
 				const angle = (i / count) * Math.PI * 2;
 				top = 50 + Math.sin(angle) * 30;
@@ -129,11 +131,17 @@ const mugs = (await getCollection('mugs')).sort(
 
 	// Notecard Modal Logic
 	const overlay = document.getElementById('notecard-overlay');
+	const notecard = overlay.querySelector('.notecard');
 	const notecardImage = document.getElementById('notecard-image');
 	const notecardTitle = document.getElementById('notecard-title');
 	const notecardDate = document.getElementById('notecard-date');
+	const prevArrow = overlay.querySelector('.notecard-arrow-prev');
+	const nextArrow = overlay.querySelector('.notecard-arrow-next');
 
-	function openNotecard(container) {
+	let currentIndex = 0;
+
+	function showMug(index) {
+		const container = containers[index];
 		const title = container.dataset.title;
 		const date = container.dataset.date;
 		const image = container.dataset.image;
@@ -142,7 +150,12 @@ const mugs = (await getCollection('mugs')).sort(
 		notecardImage.alt = title;
 		notecardTitle.textContent = title;
 		notecardDate.textContent = date;
+		currentIndex = index;
+	}
 
+	function openNotecard(container) {
+		currentIndex = parseInt(container.dataset.index);
+		showMug(currentIndex);
 		overlay.classList.add('is-visible');
 		overlay.setAttribute('aria-hidden', 'false');
 	}
@@ -150,6 +163,16 @@ const mugs = (await getCollection('mugs')).sort(
 	function closeNotecard() {
 		overlay.classList.remove('is-visible');
 		overlay.setAttribute('aria-hidden', 'true');
+	}
+
+	function goToPrev() {
+		currentIndex = (currentIndex - 1 + containers.length) % containers.length;
+		showMug(currentIndex);
+	}
+
+	function goToNext() {
+		currentIndex = (currentIndex + 1) % containers.length;
+		showMug(currentIndex);
 	}
 
 	containers.forEach((container) => {
@@ -162,13 +185,41 @@ const mugs = (await getCollection('mugs')).sort(
 		});
 	});
 
+	prevArrow.addEventListener('click', (e) => {
+		e.stopPropagation();
+		goToPrev();
+	});
+
+	nextArrow.addEventListener('click', (e) => {
+		e.stopPropagation();
+		goToNext();
+	});
+
 	overlay.addEventListener('click', (e) => {
 		if (e.target === overlay) closeNotecard();
 	});
 
 	document.addEventListener('keydown', (e) => {
-		if (e.key === 'Escape' && overlay.classList.contains('is-visible')) {
-			closeNotecard();
-		}
+		if (!overlay.classList.contains('is-visible')) return;
+		if (e.key === 'Escape') closeNotecard();
+		if (e.key === 'ArrowLeft') goToPrev();
+		if (e.key === 'ArrowRight') goToNext();
 	});
+
+	// Swipe support for mobile
+	let touchStartX = 0;
+	let touchEndX = 0;
+
+	notecard.addEventListener('touchstart', (e) => {
+		touchStartX = e.changedTouches[0].screenX;
+	}, { passive: true });
+
+	notecard.addEventListener('touchend', (e) => {
+		touchEndX = e.changedTouches[0].screenX;
+		const diff = touchStartX - touchEndX;
+		if (Math.abs(diff) > 50) {
+			if (diff > 0) goToNext();
+			else goToPrev();
+		}
+	}, { passive: true });
 </script>

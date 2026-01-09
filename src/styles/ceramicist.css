@@ -282,7 +282,43 @@ body {
 	cursor: pointer;
 }
 
+/* Navigation arrows */
+.notecard-arrow {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 1.5rem;
+	color: rgba(80, 60, 40, 0.4);
+	cursor: pointer;
+	padding: 1rem;
+	transition: color 0.2s ease, transform 0.2s ease;
+	user-select: none;
+}
+
+.notecard-arrow:hover {
+	color: rgba(80, 60, 40, 0.7);
+}
+
+.notecard-arrow-prev {
+	left: 1rem;
+}
+
+.notecard-arrow-prev:hover {
+	transform: translateY(-50%) translateX(-3px);
+}
+
+.notecard-arrow-next {
+	right: 1rem;
+}
+
+.notecard-arrow-next:hover {
+	transform: translateY(-50%) translateX(3px);
+}
+
 @media (max-width: 768px) {
+	.notecard-arrow {
+		display: none;
+	}
 	.notecard {
 		width: min(92vw, 340px);
 		padding: 1.25rem;
