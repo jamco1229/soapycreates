@@ -139,17 +139,62 @@ const mugs = (await getCollection('mugs')).sort(
 	const nextArrow = overlay.querySelector('.notecard-arrow-next');
 
 	let currentIndex = 0;
+	let isAnimating = false;
 
-	function showMug(index) {
+	function showMug(index, direction = null, fromDrag = false) {
 		const container = containers[index];
 		const title = container.dataset.title;
 		const date = container.dataset.date;
 		const image = container.dataset.image;
 
-		notecardImage.src = image;
-		notecardImage.alt = title;
-		notecardTitle.textContent = title;
-		notecardDate.textContent = date;
+		if (direction && !isAnimating) {
+			isAnimating = true;
+			const slideIn = direction === 'next' ? 'slide-in-right' : 'slide-in-left';
+
+			if (fromDrag) {
+				// Skip slide-out, user already dragged it away
+				notecardImage.src = image;
+				notecardImage.alt = title;
+				notecardTitle.textContent = title;
+				notecardDate.textContent = date;
+
+				notecard.offsetHeight;
+				notecard.classList.add(slideIn);
+
+				setTimeout(() => {
+					notecard.classList.remove(slideIn);
+					isAnimating = false;
+				}, 280);
+			} else {
+				// Full animation for arrow/keyboard nav
+				const slideOut = direction === 'next' ? 'slide-out-left' : 'slide-out-right';
+
+				notecard.offsetHeight;
+				notecard.classList.add(slideOut);
+
+				setTimeout(() => {
+					notecardImage.src = image;
+					notecardImage.alt = title;
+					notecardTitle.textContent = title;
+					notecardDate.textContent = date;
+
+					notecard.classList.remove(slideOut);
+					notecard.offsetHeight;
+					notecard.classList.add(slideIn);
+
+					setTimeout(() => {
+						notecard.classList.remove(slideIn);
+						isAnimating = false;
+					}, 280);
+				}, 220);
+			}
+		} else {
+			notecardImage.src = image;
+			notecardImage.alt = title;
+			notecardTitle.textContent = title;
+			notecardDate.textContent = date;
+		}
+
 		currentIndex = index;
 	}
 
@@ -166,13 +211,15 @@ const mugs = (await getCollection('mugs')).sort(
 	}
 
 	function goToPrev() {
-		currentIndex = (currentIndex - 1 + containers.length) % containers.length;
-		showMug(currentIndex);
+		if (isAnimating) return;
+		const newIndex = (currentIndex - 1 + containers.length) % containers.length;
+		showMug(newIndex, 'prev');
 	}
 
 	function goToNext() {
-		currentIndex = (currentIndex + 1) % containers.length;
-		showMug(currentIndex);
+		if (isAnimating) return;
+		const newIndex = (currentIndex + 1) % containers.length;
+		showMug(newIndex, 'next');
 	}
 
 	containers.forEach((container) => {
@@ -218,8 +265,70 @@ const mugs = (await getCollection('mugs')).sort(
 		touchEndX = e.changedTouches[0].screenX;
 		const diff = touchStartX - touchEndX;
 		if (Math.abs(diff) > 50) {
-			if (diff > 0) goToNext();
-			else goToPrev();
+			if (diff > 0) {
+				const newIndex = (currentIndex + 1) % containers.length;
+				showMug(newIndex, 'next', true);
+			} else {
+				const newIndex = (currentIndex - 1 + containers.length) % containers.length;
+				showMug(newIndex, 'prev', true);
+			}
 		}
 	}, { passive: true });
+
+	// Drag support for desktop
+	let isDragging = false;
+	let dragStartX = 0;
+	let dragCurrentX = 0;
+	let hasDragged = false;
+
+	notecard.addEventListener('mousedown', (e) => {
+		if (isAnimating) return;
+		isDragging = true;
+		hasDragged = false;
+		dragStartX = e.clientX;
+		dragCurrentX = e.clientX;
+		notecard.style.cursor = 'grabbing';
+		notecard.style.transition = 'none';
+	});
+
+	document.addEventListener('mousemove', (e) => {
+		if (!isDragging) return;
+		dragCurrentX = e.clientX;
+		const diff = dragCurrentX - dragStartX;
+
+		if (Math.abs(diff) > 5) hasDragged = true;
+
+		const rotation = diff * 0.05;
+		const clampedRotation = Math.max(-10, Math.min(10, rotation));
+		notecard.style.transform = `perspective(800px) translateX(${diff * 0.4}px) rotateY(${clampedRotation}deg) rotateZ(${-1 + diff * 0.02}deg)`;
+		notecard.style.opacity = 1 - Math.abs(diff) * 0.002;
+	});
+
+	document.addEventListener('mouseup', () => {
+		if (!isDragging) return;
+		isDragging = false;
+		notecard.style.cursor = '';
+		notecard.style.transition = '';
+		notecard.style.transform = '';
+		notecard.style.opacity = '';
+
+		const diff = dragStartX - dragCurrentX;
+		if (Math.abs(diff) > 60) {
+			if (diff > 0) {
+				const newIndex = (currentIndex + 1) % containers.length;
+				showMug(newIndex, 'next', true);
+			} else {
+				const newIndex = (currentIndex - 1 + containers.length) % containers.length;
+				showMug(newIndex, 'prev', true);
+			}
+		}
+	});
+
+	// Prevent click after drag
+	notecard.addEventListener('click', (e) => {
+		if (hasDragged) {
+			e.stopPropagation();
+			hasDragged = false;
+		}
+	}, true);
 </script>

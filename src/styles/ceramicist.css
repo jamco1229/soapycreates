@@ -233,6 +233,21 @@ body {
 	transform: rotate(6deg);
 }
 
+.notecard {
+	cursor: grab;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.notecard:active {
+	cursor: grabbing;
+}
+
+.notecard-image {
+	pointer-events: none;
+	-webkit-user-drag: none;
+}
+
 .notecard-image-container {
 	position: relative;
 	width: 100%;
@@ -313,6 +328,67 @@ body {
 
 .notecard-arrow-next:hover {
 	transform: translateY(-50%) translateX(3px);
+}
+
+/* Slide transition animations */
+.notecard.slide-out-left {
+	animation: slideOutLeft 0.2s ease-in forwards;
+}
+
+.notecard.slide-out-right {
+	animation: slideOutRight 0.2s ease-in forwards;
+}
+
+.notecard.slide-in-left {
+	animation: slideInLeft 0.25s ease-out forwards;
+}
+
+.notecard.slide-in-right {
+	animation: slideInRight 0.25s ease-out forwards;
+}
+
+@keyframes slideOutLeft {
+	from {
+		transform: perspective(800px) translateX(0) rotateY(0deg) rotateZ(-1deg);
+		opacity: 1;
+	}
+	to {
+		transform: perspective(800px) translateX(-30px) rotateY(8deg) rotateZ(-3deg);
+		opacity: 0;
+	}
+}
+
+@keyframes slideOutRight {
+	from {
+		transform: perspective(800px) translateX(0) rotateY(0deg) rotateZ(-1deg);
+		opacity: 1;
+	}
+	to {
+		transform: perspective(800px) translateX(30px) rotateY(-8deg) rotateZ(3deg);
+		opacity: 0;
+	}
+}
+
+@keyframes slideInLeft {
+	from {
+		transform: perspective(800px) translateX(30px) rotateY(-8deg) rotateZ(3deg);
+		opacity: 0;
+	}
+	to {
+		transform: perspective(800px) translateX(0) rotateY(0deg) rotateZ(-1deg);
+		opacity: 1;
+	}
+}
+
+@keyframes slideInRight {
+	from {
+		transform: perspective(800px) translateX(-30px) rotateY(8deg) rotateZ(-3deg);
+		opacity: 0;
+	}
+	to {
+		transform: perspective(800px) translateX(0) rotateY(0deg) rotateZ(-1deg);
+		opacity: 1;
+	}
 }
 
 @media (max-width: 768px) {
