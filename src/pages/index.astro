@@ -37,7 +37,19 @@ const showGrid = false;
 				class="ceramicist-wordmark"
 				loading="eager"
 			/>
-			<p class="ceramicist-subtitle">ARTIST <span class="subtitle-dash">–</span> Norwich, NORFOLK UK <span class="subtitle-dash">–</span> <a href="https://instagram.com/soapycreates" target="_blank" rel="noopener" class="subtitle-link">INSTA</a></p>
+		</div>
+		<div class="ceramicist-chrome">
+			<p class="ceramicist-chrome-tl">ARTIST</p>
+			<p class="ceramicist-chrome-bl">Norwich, NORFOLK UK</p>
+			<a
+				href="https://instagram.com/soapycreates"
+				target="_blank"
+				rel="noopener"
+				class="ceramicist-chrome-tr"
+			>
+				INSTA
+			</a>
+			<p class="ceramicist-chrome-br">@SOAPYCREATES</p>
 		</div>
 	</main>
 
@@ -323,31 +335,38 @@ const showGrid = false;
 		const diff = currentTouchX - touchStartX;
 		const threshold = 60;
 
-		notecard.style.transition = 'transform 0.25s ease-out';
-
 		if (Math.abs(diff) > threshold) {
-			// Swipe completed - animate off screen then show next
-			const direction = diff > 0 ? 'prev' : 'next';
-			const flyOut = diff > 0 ? '120%' : '-120%';
-			notecard.style.transform = `translateX(${flyOut}) rotate(${diff * 0.03}deg)`;
+			// Swipe left (diff < 0) = next, swipe right (diff > 0) = prev
+			const goingNext = diff < 0;
+			const newIndex = goingNext
+				? (currentIndex + 1) % containers.length
+				: (currentIndex - 1 + containers.length) % containers.length;
+
+			// Fly current card off in swipe direction
+			const flyOutX = goingNext ? -window.innerWidth : window.innerWidth;
+			notecard.style.transition = 'transform 0.2s ease-in';
+			notecard.style.transform = `translateX(${flyOutX}px)`;
 
 			setTimeout(() => {
+				// Position new card on opposite side
+				const enterFromX = goingNext ? window.innerWidth : -window.innerWidth;
 				notecard.style.transition = 'none';
-				notecard.style.transform = `translateX(${diff > 0 ? '-80%' : '80%'})`;
+				notecard.style.transform = `translateX(${enterFromX}px)`;
 
-				const newIndex = direction === 'next'
-					? (currentIndex + 1) % containers.length
-					: (currentIndex - 1 + containers.length) % containers.length;
-				showMug(newIndex, direction, true);
+				showMug(newIndex, goingNext ? 'next' : 'prev', true);
 
+				// Slide new card to center
 				requestAnimationFrame(() => {
-					notecard.style.transition = 'transform 0.25s ease-out';
-					notecard.style.transform = 'translateX(0) rotate(0deg)';
+					requestAnimationFrame(() => {
+						notecard.style.transition = 'transform 0.2s ease-out';
+						notecard.style.transform = 'translateX(0)';
+					});
 				});
 			}, 200);
 		} else {
 			// Snap back
-			notecard.style.transform = 'translateX(0) rotate(0deg)';
+			notecard.style.transition = 'transform 0.2s ease-out';
+			notecard.style.transform = 'translateX(0)';
 		}
 	}, { passive: true });
 
@@ -386,29 +405,38 @@ const showGrid = false;
 		const diff = dragCurrentX - dragStartX;
 		const threshold = 60;
 
-		notecard.style.transition = 'transform 0.25s ease-out';
-
 		if (Math.abs(diff) > threshold) {
-			const direction = diff > 0 ? 'prev' : 'next';
-			const flyOut = diff > 0 ? '120%' : '-120%';
-			notecard.style.transform = `translateX(${flyOut}) rotate(${diff * 0.03}deg)`;
+			// Drag left (diff < 0) = next, drag right (diff > 0) = prev
+			const goingNext = diff < 0;
+			const newIndex = goingNext
+				? (currentIndex + 1) % containers.length
+				: (currentIndex - 1 + containers.length) % containers.length;
+
+			// Fly current card off in drag direction
+			const flyOutX = goingNext ? -window.innerWidth : window.innerWidth;
+			notecard.style.transition = 'transform 0.2s ease-in';
+			notecard.style.transform = `translateX(${flyOutX}px)`;
 
 			setTimeout(() => {
+				// Position new card on opposite side
+				const enterFromX = goingNext ? window.innerWidth : -window.innerWidth;
 				notecard.style.transition = 'none';
-				notecard.style.transform = `translateX(${diff > 0 ? '-80%' : '80%'})`;
+				notecard.style.transform = `translateX(${enterFromX}px)`;
 
-				const newIndex = direction === 'next'
-					? (currentIndex + 1) % containers.length
-					: (currentIndex - 1 + containers.length) % containers.length;
-				showMug(newIndex, direction, true);
+				showMug(newIndex, goingNext ? 'next' : 'prev', true);
 
+				// Slide new card to center
 				requestAnimationFrame(() => {
-					notecard.style.transition = 'transform 0.25s ease-out';
-					notecard.style.transform = 'translateX(0) rotate(0deg)';
+					requestAnimationFrame(() => {
+						notecard.style.transition = 'transform 0.2s ease-out';
+						notecard.style.transform = 'translateX(0)';
+					});
 				});
 			}, 200);
 		} else {
-			notecard.style.transform = 'translateX(0) rotate(0deg)';
+			// Snap back
+			notecard.style.transition = 'transform 0.2s ease-out';
+			notecard.style.transform = 'translateX(0)';
 		}
 	});
 

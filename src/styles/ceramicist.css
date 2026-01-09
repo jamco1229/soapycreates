@@ -52,13 +52,15 @@ body {
 
 /* Keep everything hidden and paused until ready */
 .ceramicist-page:not(.is-ready) .ceramicist-mug-container,
-.ceramicist-page:not(.is-ready) .ceramicist-center {
+.ceramicist-page:not(.is-ready) .ceramicist-center,
+.ceramicist-page:not(.is-ready) .ceramicist-chrome {
   animation-play-state: paused;
   visibility: hidden;
 }
 
 .ceramicist-page.is-ready .ceramicist-mug-container,
-.ceramicist-page.is-ready .ceramicist-center {
+.ceramicist-page.is-ready .ceramicist-center,
+.ceramicist-page.is-ready .ceramicist-chrome {
   visibility: visible;
 }
 
@@ -96,7 +98,6 @@ body {
   display: grid;
   place-items: center;
   text-align: center;
-  gap: 0.5rem;
   padding: 1rem 1.5rem;
   transition: opacity 0.6s ease;
   animation: ceramicist-center-reveal 0.9s ease forwards;
@@ -113,30 +114,65 @@ body {
   color: white;
 }
 
-.ceramicist-subtitle {
-  margin: 0;
+.ceramicist-chrome {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  font-size: 0.78rem;
   color: white;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+  animation: ceramicist-chrome-reveal 0.9s ease forwards;
+  animation-delay: 0.35s;
+  opacity: 0;
+}
+
+.ceramicist-chrome-tl,
+.ceramicist-chrome-tr,
+.ceramicist-chrome-bl,
+.ceramicist-chrome-br {
+  position: fixed;
+  margin: 0;
   pointer-events: auto;
+}
+
+.ceramicist-chrome-tl {
+  top: 2.5rem;
+  left: 2.5rem;
+}
+
+.ceramicist-chrome-tr {
+  top: 2.5rem;
+  right: 2.5rem;
+  color: white;
+  text-decoration: none;
+}
+
+.ceramicist-chrome-bl {
+  bottom: 2.5rem;
+  left: 2.5rem;
+}
+
+.ceramicist-chrome-br {
+  bottom: 2.5rem;
+  right: 2.5rem;
+}
+
+.ceramicist-chrome-tr {
+  color: white;
+  text-decoration: none;
 }
 
 .subtitle-dash {
   opacity: 0.7;
 }
 
-.subtitle-link {
-  color: white;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.subtitle-link:hover {
+.ceramicist-chrome-tr:hover {
   opacity: 0.8;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 @media (max-width: 768px) {
@@ -163,8 +199,30 @@ body {
     max-width: min(50vw, 280px);
   }
 
-  .ceramicist-subtitle {
-    font-size: 0.875rem;
+  .ceramicist-chrome {
+    inset: 0;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+  }
+
+  .ceramicist-chrome-tl,
+  .ceramicist-chrome-tr {
+    top: 1.5rem;
+  }
+
+  .ceramicist-chrome-bl,
+  .ceramicist-chrome-br {
+    bottom: 1.5rem;
+  }
+
+  .ceramicist-chrome-tl,
+  .ceramicist-chrome-bl {
+    left: 1.5rem;
+  }
+
+  .ceramicist-chrome-tr,
+  .ceramicist-chrome-br {
+    right: 1.5rem;
   }
 }
 
@@ -187,6 +245,15 @@ body {
   100% {
     opacity: 1;
     transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes ceramicist-chrome-reveal {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
 
