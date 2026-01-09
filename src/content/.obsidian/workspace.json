@@ -1,0 +1,188 @@
+{
+  "main": {
+    "id": "9cfacc406449dfc3",
+    "type": "split",
+    "children": [
+      {
+        "id": "f587226be0b5991a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "763c27bb8fe6cd03",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "mugs/chunkymug.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "chunkymug"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "63ee1bb1f5a038eb",
+    "type": "split",
+    "children": [
+      {
+        "id": "bf11d5ea7be1081e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "596e3c59be8fd4ef",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "f2b6f7b1a38c28c5",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "1e6d1e47eabe5de8",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "d97f3ea1b831dbe5",
+    "type": "split",
+    "children": [
+      {
+        "id": "a4ccd0e02f834cc2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "15ec5f1e6c913eea",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "mugs/chunkymug.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for chunkymug"
+            }
+          },
+          {
+            "id": "d58ca5a6d32915df",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "mugs/chunkymug.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from chunkymug"
+            }
+          },
+          {
+            "id": "e0dd65bb8950beeb",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "399be11686542b3b",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "mugs/chunkymug.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of chunkymug"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "763c27bb8fe6cd03",
+  "lastOpenFiles": [
+    "mugs/grandadmug copy 1.md",
+    "mugs/grandadmug copy.md",
+    "mugs/coffeecup.md",
+    "mugs/flowercup.md",
+    "mugs/flowercup2.md",
+    "mugs/dottymug.md",
+    "mugs/cowboymug.md",
+    "mugs/coffeecup2.md",
+    "mugs/chunkymug.md",
+    "mugs/frame_02.md",
+    "mugs/rockymug.md",
+    "mugs/ratmug.md",
+    "mugs/grandadmug.md"
+  ]
+}
