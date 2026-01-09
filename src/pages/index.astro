@@ -193,7 +193,18 @@ const showGrid = false;
     let designMode = false;
 
     // Fixed positions mapped to mug titles (sizes in vw for responsiveness)
-    const fixedPositions = {
+    const desktopPositions = {
+        "Chunky Mug":    { top: 44.9669, left: 86.3586, size: 28 },
+        "Coffee Cup 2":  { top: 68.113, left: 61.7069, size: 25 },
+        "Cowboy Mug":    { top: 16.64, left: 72.10, size: 27 },
+        "Dotty Mug":     { top: 83.74, left: 85.2157, size: 36 },
+        "Flower Cup":    { top: 56.2878, left: 10.7571, size: 25 },
+        "Flower Cup 2":  { top: 79.6847, left: 32.5181, size: 37 },
+        "Rat Mug":       { top: 29.7852, left: 44.4123, size: 23 },
+        "Rocky Mug":     { top: 30.0297, left: 20.6272, size: 21 },
+    };
+
+    const mobilePositions = {
         "Chunky Mug":    { top: 46.0963, left: 84.1177, size: 40 },
         "Coffee Cup 2":  { top: 70.0637, left: 53.5837, size: 37.5 },
         "Cowboy Mug":    { top: 28.1736, left: 74.0377, size: 43 },
@@ -204,10 +215,15 @@ const showGrid = false;
         "Rocky Mug":     { top: 30.0297, left: 20.6272, size: 37 },
     };
 
+    function getPositions() {
+        return window.innerWidth <= 600 ? mobilePositions : desktopPositions;
+    }
+
     function applyPositions(animated = false) {
+        const positions = getPositions();
         containers.forEach((container, index) => {
             const title = container.dataset.title;
-            const pos = fixedPositions[title];
+            const pos = positions[title];
 
             if (!pos) {
                 console.warn(`No position found for: ${title}`);
