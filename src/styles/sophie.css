@@ -44,11 +44,10 @@ body {
 .sophie-mug-container {
     position: absolute;
     transform: translate(-50%, -50%);
-    display: grid;
-    place-items: center;
     transition: transform 0.3s ease;
     animation: sophie-fade-in 0.6s ease both;
     opacity: 0;
+    z-index: 1;
 }
 
 /* Keep everything hidden and paused until ready */
@@ -66,7 +65,7 @@ body {
 }
 
 .sophie-mug-container:hover {
-    transform: translate(-50%, -50%) scale(1.02);
+    transform: translate(-50%, -50%) translateY(-4px) scale(1.02);
 }
 
 .sophie-mug {
@@ -74,20 +73,73 @@ body {
     height: auto;
     display: block;
     position: relative;
-    z-index: 1;
+    z-index: 2;
+    transition: transform 0.3s ease-out;
 }
 
-.sophie-mug-shadow-img {
+/* Shadow wrapper positions both shadow layers */
+.sophie-mug-shadow-wrapper {
     position: absolute;
     width: 100%;
-    height: auto;
-    top: -21%;
+    height: 100%;
+    top: 0;
     left: 0;
-    transform: scaleY(0.15) scaleX(0.9);
-    transform-origin: center bottom;
-    filter: blur(6px) brightness(0) opacity(0.35);
     z-index: 0;
     pointer-events: none;
+}
+
+/* Shared shadow properties */
+.sophie-mug-shadow {
+    position: absolute;
+    bottom: 0;
+    left: 43%;
+    transform-origin: center bottom;
+    transition:
+        transform 0.3s ease-out,
+        filter 0.3s ease-out,
+        opacity 0.3s ease-out;
+}
+
+/* Contact shadow - sharp ellipse at base for grounding */
+.sophie-mug-shadow--contact {
+    width: 65%;
+    height: 20%;
+    bottom: 22%;
+    transform: translateX(-35%);
+    background: radial-gradient(
+        ellipse 50% 50%,
+        rgba(25, 20, 15, 0.6) 0%,
+        rgba(25, 20, 15, 0.3) 50%,
+        transparent 75%
+    );
+    filter: blur(9px);
+}
+
+/* Ambient shadow - image-based, offset back-right (light from front-left) */
+.sophie-mug-shadow--ambient {
+    width: 100%;
+    height: auto;
+    bottom: 0;
+    left: 0;
+    transform: translate(-65%, -10%) scale(1.2, 0.7) skew(-53deg, 5deg);
+    filter: blur(4px) brightness(0) opacity(0.4);
+    mix-blend-mode: darken;
+}
+
+.sophie-mug-container:hover .sophie-mug-shadow--contact {
+    transform: translateX(-35%) scale(0.9, 0.85);
+    filter: blur(16px);
+    opacity: 0.7;
+}
+
+.sophie-mug-container:hover .sophie-mug-shadow--ambient {
+    transform: translate(-62%, -10%) scale(1.2, 0.7) skew(-54deg, 3deg);
+    opacity: 0.45;
+    filter: blur(10px) brightness(0) opacity(0.4);
+}
+
+.sophie-mug-container:hover .sophie-mug {
+    transform: translateY(-3px);
 }
 
 .sophie-center {
@@ -128,7 +180,7 @@ body {
     z-index: 2;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    font-size: 0.78rem;
+    font-size: 0.9rem;
     color: white;
     pointer-events: none;
     transition: opacity 0.6s ease;
@@ -215,18 +267,34 @@ body {
 
 @media (max-width: 768px) {
     body {
-        overflow: hidden;
-        height: 100vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: auto;
     }
 
     .sophie-page {
-        height: 100vh;
         min-height: 100vh;
+        padding: 0;
+    }
+
+    .sophie-mugs {
+        position: absolute;
+        inset: 0;
+        height: 100vh;
         padding: 0;
     }
 
     .sophie-mug-container {
         opacity: 1;
+    }
+
+    /* Mobile shadow optimizations - reduced blur for performance */
+    .sophie-mug-shadow--contact {
+        filter: blur(1px);
+    }
+
+    .sophie-mug-shadow--ambient {
+        filter: blur(5px) brightness(0) opacity(0.22) sepia(0.15);
     }
 
     .sophie-center {
@@ -240,7 +308,7 @@ body {
 
     .sophie-chrome {
         inset: 0;
-        font-size: 0.55rem;
+        font-size: 0.75rem;
         letter-spacing: 0.08em;
         opacity: 0.85;
     }
@@ -267,7 +335,6 @@ body {
 
     .sophie-shuffle {
         bottom: 1rem;
-        font-size: 0.55rem;
         padding: 0.3rem 0.7rem;
     }
 }
@@ -298,6 +365,38 @@ body {
     50% {
         transform: translate(-50%, -51%) rotate(1deg);
         opacity: 1;
+    }
+}
+
+/* Shadow dance animations - synced with mug dance */
+.sophie-mug-container.is-dancing .sophie-mug-shadow--contact {
+    animation: sophie-shadow-contact-dance 0.5s ease-in-out infinite;
+}
+
+.sophie-mug-container.is-dancing .sophie-mug-shadow--ambient {
+    animation: sophie-shadow-ambient-dance 0.5s ease-in-out infinite;
+}
+
+@keyframes sophie-shadow-contact-dance {
+    0%,
+    100% {
+        transform: translateX(calc(-50% + var(--shadow-offset-x, 0px))) scale(1);
+    }
+    50% {
+        transform: translateX(calc(-50% + var(--shadow-offset-x, 0px)))
+            scale(0.88);
+    }
+}
+
+@keyframes sophie-shadow-ambient-dance {
+    0%,
+    100% {
+        transform: translateX(calc(-50% + var(--shadow-offset-x, 0px)))
+            translateY(var(--shadow-offset-y, 0px)) scaleY(0.12) scaleX(0.85);
+    }
+    50% {
+        transform: translateX(calc(-50% + var(--shadow-offset-x, 0px)))
+            translateY(var(--shadow-offset-y, 0px)) scaleY(0.1) scaleX(0.82);
     }
 }
 
@@ -332,6 +431,21 @@ body {
     }
 }
 
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .sophie-mug-container,
+    .sophie-mug-container.is-dancing,
+    .sophie-mug-container.is-dancing .sophie-mug-shadow--contact,
+    .sophie-mug-container.is-dancing .sophie-mug-shadow--ambient {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .sophie-mug-container {
+        opacity: 1 !important;
+    }
+}
+
 /* Notecard Modal Styles */
 .notecard-overlay {
     position: fixed;
@@ -362,42 +476,12 @@ body {
     box-shadow:
         0 4px 100px rgba(0, 0, 0, 0.12),
         0 8px 24px rgba(0, 0, 0, 0.08);
-    transform: perspective(800px) translateY(60px) rotateX(-4deg) rotateZ(2deg);
+    transform: perspective(800px) translateY(60px);
     opacity: 0;
     transition:
         transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1),
         opacity 0.3s ease;
     transform-style: preserve-3d;
-}
-
-.notecard-paperclip {
-    position: absolute;
-    top: -15px;
-    left: 50px;
-    width: 20px;
-    height: 60px;
-    border: 2.5px solid #c0c0c0;
-    border-radius: 10px;
-    transform: rotate(-5deg);
-    background: transparent;
-    box-shadow:
-        inset 1px 1px 0 rgba(255, 255, 255, 0.2),
-        1px 2px 4px rgba(0, 0, 0, 0.12);
-    z-index: 10;
-}
-
-.notecard-paperclip::after {
-    content: "";
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 8px;
-    height: 36px;
-    border: 2.5px solid #c0c0c0;
-    border-radius: 6px;
-    background: transparent;
-    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 /* Paper texture SVG overlay - subtle */
@@ -408,7 +492,7 @@ body {
 /* Vignette removed for cleaner design */
 
 .notecard-overlay.is-visible .notecard {
-    transform: perspective(800px) translateY(0) rotateX(1deg) rotateZ(-1deg);
+    transform: perspective(800px) translateY(0);
     opacity: 1;
 }
 
@@ -442,11 +526,9 @@ body {
     aspect-ratio: 3/4;
     background: #2e3c3f;
     border-radius: 3px;
-    top: -50px;
     overflow: hidden;
     margin-bottom: 1rem;
     box-shadow: 0 4px 100px rgba(0, 0, 0, 0.12);
-    transform: rotate(-4deg);
 }
 
 .notecard-image {
@@ -568,13 +650,6 @@ body {
     overflow: visible;
     background: transparent;
     top: -40px;
-}
-
-.bio-image-container .notecard-paperclip {
-    top: -15px;
-    left: 50px;
-    transform: rotate(-5deg);
-    clip-path: inset(12px 0 0 0);
 }
 
 .bio-image-back {

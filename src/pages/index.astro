@@ -37,13 +37,15 @@ const showGrid = false;
                         role="button"
                         tabindex="0"
                     >
-                        <img
-                            src={mug.data.image}
-                            alt=""
-                            class="sophie-mug-shadow-img"
-                            loading="eager"
-                            aria-hidden="true"
-                        />
+                        <div class="sophie-mug-shadow-wrapper" aria-hidden="true">
+                            <div class="sophie-mug-shadow sophie-mug-shadow--contact"></div>
+                            <img
+                                src={mug.data.image}
+                                alt=""
+                                class="sophie-mug-shadow sophie-mug-shadow--ambient"
+                                loading="eager"
+                            />
+                        </div>
                         <img
                             src={mug.data.image}
                             alt={mug.data.title}
@@ -119,7 +121,6 @@ const showGrid = false;
                 ></rect>
             </svg>
             <div class="notecard-image-container">
-                <div class="notecard-paperclip" aria-hidden="true"></div>
                 <img class="notecard-image" id="notecard-image" src="" alt="" />
             </div>
             <div class="notecard-content">
@@ -162,7 +163,6 @@ const showGrid = false;
     <div class="bio-overlay" id="bio-overlay" aria-hidden="true">
         <div class="notecard bio-notecard" role="dialog" aria-modal="true">
             <div class="notecard-image-container bio-image-container">
-                <div class="notecard-paperclip" aria-hidden="true"></div>
                 <img
                     src="/pp-2.png"
                     alt=""
@@ -189,113 +189,38 @@ const showGrid = false;
         document.querySelectorAll(".sophie-mug-container"),
     );
 
-    function generatePositions(count) {
-        const isMobile = window.innerWidth <= 768;
+    // Design mode flag (declared early for click handlers)
+    let designMode = false;
 
-        // Grid configuration: cells like a chessboard
-        // Mobile: 3 cols × 5 rows, center cell (7) reserved for wordmark
-        // Desktop: 5 cols × 4 rows, middle column cells (7, 12) reserved
-        const config = isMobile ? {
-            cols: 3,
-            rows: 5,
-            padding: { top: 8, bottom: 8, left: 5, right: 5 },
-            excludedCells: [7], // center cell (row 2, col 1)
-            jitterPercent: 0.20,
-            sizes: { 0: [95, 115], 1: [105, 125], 2: [110, 130], 3: [115, 135], 4: [120, 140] }
-        } : {
-            cols: 5,
-            rows: 4,
-            padding: { top: 10, bottom: 10, left: 5, right: 5 },
-            excludedCells: [7, 12], // middle column, rows 1-2
-            jitterPercent: 0.15,
-            sizes: { 0: [160, 190], 1: [190, 220], 2: [210, 240], 3: [220, 260] }
-        };
-
-        // Calculate cell dimensions
-        const availableWidth = 100 - config.padding.left - config.padding.right;
-        const availableHeight = 100 - config.padding.top - config.padding.bottom;
-        const cellWidth = availableWidth / config.cols;
-        const cellHeight = availableHeight / config.rows;
-
-        // Build list of available cells
-        const availableCells = [];
-        for (let i = 0; i < config.cols * config.rows; i++) {
-            if (!config.excludedCells.includes(i)) availableCells.push(i);
-        }
-
-        // Helper to check if two cells are adjacent (including diagonals)
-        function areAdjacent(cellA, cellB) {
-            const rowA = Math.floor(cellA / config.cols);
-            const colA = cellA % config.cols;
-            const rowB = Math.floor(cellB / config.cols);
-            const colB = cellB % config.cols;
-            return Math.abs(rowA - rowB) <= 1 && Math.abs(colA - colB) <= 1;
-        }
-
-        // Select cells preferring non-adjacent placement
-        const selectedCells = [];
-        const remainingCells = [...availableCells].sort(() => Math.random() - 0.5);
-
-        for (let i = 0; i < count; i++) {
-            // Find cells not adjacent to any already selected
-            const nonAdjacent = remainingCells.filter(cell =>
-                !selectedCells.some(selected => areAdjacent(cell, selected))
-            );
-
-            // Prefer non-adjacent, fallback to any remaining
-            const pool = nonAdjacent.length > 0 ? nonAdjacent : remainingCells;
-            const chosenIndex = Math.floor(Math.random() * pool.length);
-            const chosen = pool[chosenIndex];
-
-            selectedCells.push(chosen);
-            remainingCells.splice(remainingCells.indexOf(chosen), 1);
-
-            // If we've used all cells, refill for overflow
-            if (remainingCells.length === 0) {
-                remainingCells.push(...availableCells.sort(() => Math.random() - 0.5));
-            }
-        }
-
-        // Generate positions
-        const positions = [];
-        for (let i = 0; i < count; i++) {
-            const cellIndex = selectedCells[i];
-            const col = cellIndex % config.cols;
-            const row = Math.floor(cellIndex / config.cols);
-
-            // Cell center in percentages
-            const centerX = config.padding.left + (col + 0.5) * cellWidth;
-            const centerY = config.padding.top + (row + 0.5) * cellHeight;
-
-            // Apply jitter within cell bounds
-            const jitterX = (Math.random() - 0.5) * cellWidth * config.jitterPercent;
-            const jitterY = (Math.random() - 0.5) * cellHeight * config.jitterPercent;
-
-            // Size based on row (larger toward bottom for depth)
-            const sizeRange = config.sizes[row];
-            const size = sizeRange[0] + Math.random() * (sizeRange[1] - sizeRange[0]);
-
-            positions.push({
-                top: centerY + jitterY,
-                left: centerX + jitterX,
-                size
-            });
-        }
-
-        return positions;
-    }
+    // Fixed positions mapped to mug titles (sizes in vw for responsiveness)
+    const fixedPositions = {
+        "Chunky Mug":    { top: 46.0963, left: 84.1177, size: 40 },
+        "Coffee Cup 2":  { top: 70.0637, left: 53.5837, size: 37.5 },
+        "Cowboy Mug":    { top: 28.1736, left: 74.0377, size: 43 },
+        "Dotty Mug":     { top: 84.4587, left: 79.1232, size: 50 },
+        "Flower Cup":    { top: 56.3905, left: 9.5666, size: 50 },
+        "Flower Cup 2":  { top: 84.2022, left: 15.4312, size: 50 },
+        "Rat Mug":       { top: 10.2781, left: 39.0902, size: 39 },
+        "Rocky Mug":     { top: 30.0297, left: 20.6272, size: 37 },
+    };
 
     function applyPositions(animated = false) {
-        const positions = generatePositions(containers.length);
         containers.forEach((container, index) => {
-            const { top, left, size } = positions[index];
+            const title = container.dataset.title;
+            const pos = fixedPositions[title];
+
+            if (!pos) {
+                console.warn(`No position found for: ${title}`);
+                return;
+            }
+
             if (animated) {
                 container.style.transition =
                     "top 0.4s ease, left 0.4s ease, width 0.4s ease";
             }
-            container.style.top = `${top}%`;
-            container.style.left = `${left}%`;
-            container.style.width = `${size}px`;
+            container.style.top = `${pos.top}%`;
+            container.style.left = `${pos.left}%`;
+            container.style.width = `${pos.size}vw`;
             if (!animated) {
                 container.style.animationDelay = `${0.3 + index * 0.08}s`;
             }
@@ -305,11 +230,38 @@ const showGrid = false;
                 containers.forEach((container) => {
                     container.style.transition = "";
                 });
+                updateShadowPerspective();
             }, 400);
         }
     }
 
+    // Perspective-aware shadows: shadows shift based on mug position
+    function updateShadowPerspective() {
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 3; // Light from upper-center
+        const maxOffset = 5; // Max shadow shift in pixels
+
+        containers.forEach((container) => {
+            const rect = container.getBoundingClientRect();
+            const mugX = rect.left + rect.width / 2;
+            const mugY = rect.top + rect.height / 2;
+
+            // Shadows shift away from light source
+            const offsetX = ((mugX - centerX) / centerX) * maxOffset;
+            const offsetY = ((mugY - centerY) / centerY) * maxOffset * 0.5;
+
+            container.style.setProperty('--shadow-offset-x', `${offsetX}px`);
+            container.style.setProperty('--shadow-offset-y', `${offsetY}px`);
+        });
+    }
+
     applyPositions();
+    updateShadowPerspective();
+
+    // Update perspective on resize
+    window.addEventListener('resize', () => {
+        requestAnimationFrame(updateShadowPerspective);
+    });
 
     // Shuffle button
     const shuffleBtn = document.getElementById("shuffle-btn");
@@ -331,6 +283,10 @@ const showGrid = false;
         });
     }
 
+    // Shuffle disabled - positions are now fixed
+    shuffleBtn.style.display = 'none';
+
+    /* Dance easter egg (keep for future use)
     shuffleBtn.addEventListener("mousedown", () => {
         holdTimeout = setTimeout(() => {
             startDancing();
@@ -341,9 +297,6 @@ const showGrid = false;
         clearTimeout(holdTimeout);
         if (isDancing) {
             stopDancing();
-            applyPositions(true);
-        } else {
-            applyPositions(true);
         }
     });
 
@@ -354,7 +307,6 @@ const showGrid = false;
         }
     });
 
-    // Touch support for dance
     shuffleBtn.addEventListener("touchstart", (e) => {
         e.preventDefault();
         holdTimeout = setTimeout(() => {
@@ -366,11 +318,9 @@ const showGrid = false;
         clearTimeout(holdTimeout);
         if (isDancing) {
             stopDancing();
-            applyPositions(true);
-        } else {
-            applyPositions(true);
         }
     });
+    */
 
     // Wait for all mug images to load before animating in
     const mugImages = Array.from(document.querySelectorAll(".sophie-mug"));
@@ -543,8 +493,12 @@ const showGrid = false;
     }
 
     containers.forEach((container) => {
-        container.addEventListener("click", () => openNotecard(container));
+        container.addEventListener("click", () => {
+            if (designMode) return;
+            openNotecard(container);
+        });
         container.addEventListener("keydown", (e) => {
+            if (designMode) return;
             if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
                 openNotecard(container);
@@ -773,4 +727,146 @@ const showGrid = false;
         },
         true,
     );
+
+    // ============ DESIGN MODE ============
+    let selectedMug = null;
+    let designDragStart = { x: 0, y: 0 };
+    let mugStartPos = { top: 0, left: 0 };
+
+    // Create toolbar
+    const toolbar = document.createElement('div');
+    toolbar.id = 'design-toolbar';
+    toolbar.innerHTML = `
+        <div style="display: flex; gap: 8px; align-items: center;">
+            <span style="font-weight: bold;">DESIGN MODE</span>
+            <button id="design-log">Log Positions</button>
+            <button id="design-reset">Reset</button>
+            <button id="design-close">Close</button>
+        </div>
+        <div id="design-info" style="font-size: 11px; margin-top: 6px;">Click a mug to select, drag to move</div>
+    `;
+    toolbar.style.cssText = `
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.9);
+        color: white;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-family: monospace;
+        font-size: 12px;
+        z-index: 9999;
+        display: none;
+    `;
+    document.body.appendChild(toolbar);
+
+    const designInfo = toolbar.querySelector('#design-info');
+
+    function toggleDesignMode() {
+        designMode = !designMode;
+        toolbar.style.display = designMode ? 'block' : 'none';
+        document.body.style.cursor = designMode ? 'crosshair' : '';
+
+        containers.forEach(c => {
+            c.style.pointerEvents = designMode ? 'auto' : '';
+            c.style.cursor = designMode ? 'grab' : 'pointer';
+        });
+
+        if (!designMode && selectedMug) {
+            selectedMug.style.outline = '';
+            selectedMug = null;
+        }
+    }
+
+    // Toggle with Cmd/Ctrl + D
+    document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'd') {
+            e.preventDefault();
+            toggleDesignMode();
+        }
+    });
+
+    // Design mode drag
+    containers.forEach((container) => {
+        container.addEventListener('mousedown', (e) => {
+            if (!designMode) return;
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (selectedMug) selectedMug.style.outline = '';
+            selectedMug = container;
+            selectedMug.style.outline = '2px solid #00ff00';
+            selectedMug.style.cursor = 'grabbing';
+
+            designDragStart = { x: e.clientX, y: e.clientY };
+            mugStartPos = {
+                top: parseFloat(container.style.top),
+                left: parseFloat(container.style.left)
+            };
+
+            const mugsRect = document.querySelector('.sophie-mugs').getBoundingClientRect();
+
+            function onMouseMove(e) {
+                const deltaX = e.clientX - designDragStart.x;
+                const deltaY = e.clientY - designDragStart.y;
+
+                const newLeft = mugStartPos.left + (deltaX / mugsRect.width) * 100;
+                const newTop = mugStartPos.top + (deltaY / mugsRect.height) * 100;
+
+                container.style.left = `${newLeft}%`;
+                container.style.top = `${newTop}%`;
+
+                designInfo.textContent = `${container.dataset.title}: top: ${newTop.toFixed(2)}%, left: ${newLeft.toFixed(2)}%, size: ${parseFloat(container.style.width).toFixed(1)}vw`;
+            }
+
+            function onMouseUp() {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+                if (selectedMug) selectedMug.style.cursor = 'grab';
+            }
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+    });
+
+    // Resize selected mug with scroll (uses vw units)
+    document.addEventListener('wheel', (e) => {
+        if (!designMode || !selectedMug) return;
+        e.preventDefault();
+        const currentSize = parseFloat(selectedMug.style.width);
+        const delta = e.deltaY > 0 ? -1 : 1;
+        const newSize = Math.max(10, Math.min(50, currentSize + delta));
+        selectedMug.style.width = `${newSize}vw`;
+        designInfo.textContent = `${selectedMug.dataset.title}: size: ${newSize}vw`;
+    }, { passive: false });
+
+    // Toolbar buttons
+    toolbar.querySelector('#design-log').addEventListener('click', () => {
+        const positions = containers.map(c => ({
+            title: c.dataset.title,
+            top: parseFloat(c.style.top),
+            left: parseFloat(c.style.left),
+            size: parseFloat(c.style.width)
+        }));
+        console.log('Mug Positions:', JSON.stringify(positions, null, 2));
+
+        // Also log in code-ready format
+        console.log('\n// Code-ready format:');
+        console.log('const fixedPositions = {');
+        positions.forEach(p => {
+            console.log(`    "${p.title}": { top: ${p.top}, left: ${p.left}, size: ${p.size} },`);
+        });
+        console.log('};');
+
+        alert('Positions logged to console!');
+    });
+
+    toolbar.querySelector('#design-reset').addEventListener('click', () => {
+        applyPositions(true);
+        updateShadowPerspective();
+    });
+
+    toolbar.querySelector('#design-close').addEventListener('click', toggleDesignMode);
 </script>
