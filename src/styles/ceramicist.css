@@ -1,0 +1,129 @@
+:root {
+	color-scheme: light;
+}
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	background: #e8e3dc;
+	font-family: 'Helvetica Neue', Arial, sans-serif;
+	overflow: hidden;
+}
+
+.ceramicist-page {
+	position: relative;
+	min-height: 100vh;
+	display: grid;
+	place-items: center;
+	isolation: isolate;
+}
+
+.ceramicist-mugs {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+}
+
+.ceramicist-page.is-loading .ceramicist-mug-container,
+.ceramicist-page.is-loading .ceramicist-center {
+	opacity: 0;
+	transform: translate(-50%, -50%) scale(0.96);
+}
+
+.ceramicist-mug-container {
+	position: absolute;
+	transform: translate(-50%, -50%);
+	display: grid;
+	place-items: center;
+	transition: transform 0.6s ease, opacity 0.6s ease;
+	animation: ceramicist-fade-in 0.7s ease forwards;
+	opacity: 0;
+}
+
+.ceramicist-mug-container:hover {
+	transform: translate(-50%, -50%) scale(1.02);
+}
+
+.ceramicist-mug {
+	width: 100%;
+	height: auto;
+	display: block;
+	filter: drop-shadow(0 10px 14px rgba(70, 55, 40, 0.18));
+}
+
+.ceramicist-mug-shadow {
+	position: absolute;
+	bottom: 24%;
+	width: 50%;
+	height: 16px;
+	border-radius: 999px;
+	background: radial-gradient(ellipse, rgba(60, 44, 32, 0.2), transparent 70%);
+	filter: blur(3px);
+	z-index: -1;
+}
+
+.ceramicist-center {
+	position: relative;
+	z-index: 2;
+	display: grid;
+	place-items: center;
+	text-align: center;
+	gap: 0.5rem;
+	padding: 1rem 1.5rem;
+	transition: opacity 0.6s ease;
+	animation: ceramicist-center-reveal 0.9s ease forwards;
+	animation-delay: 0.3s;
+	opacity: 0;
+}
+
+.ceramicist-page:not(.is-ready) .ceramicist-mug-container,
+.ceramicist-page:not(.is-ready) .ceramicist-center {
+	animation-play-state: paused;
+}
+
+.ceramicist-wordmark {
+	max-width: min(60vw, 440px);
+	width: 100%;
+	height: auto;
+}
+
+.ceramicist-subtitle {
+	margin: 0;
+	text-transform: uppercase;
+	letter-spacing: 0.04rem;
+	font-size: 1rem;
+	color: rgba(55, 46, 40, 0.75);
+}
+
+@media (max-width: 768px) {
+	.ceramicist-mug-container {
+		opacity: 0.85;
+	}
+
+	.ceramicist-center {
+		padding: 2rem 2.5rem;
+		border-radius: 32px;
+	}
+}
+
+@keyframes ceramicist-fade-in {
+	0% {
+		opacity: 0;
+		transform: translate(-50%, -50%) scale(0.94);
+	}
+	100% {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1);
+	}
+}
+
+@keyframes ceramicist-center-reveal {
+	0% {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}

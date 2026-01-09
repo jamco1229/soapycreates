@@ -1,0 +1,97 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import '../styles/ceramicist.css';
+
+const mugs = (await getCollection('mugs')).sort(
+	(a, b) => a.data.date.valueOf() - b.data.date.valueOf()
+);
+---
+
+<Layout title="Sophie Banks | Soapy Creates">
+	<main class="ceramicist-page is-loading">
+		<div class="ceramicist-mugs" aria-hidden="true">
+			{mugs.map((mug, index) => (
+				<div class="ceramicist-mug-container" data-index={index}>
+					<img src={mug.data.image} alt="" class="ceramicist-mug" loading="eager" />
+					<span class="ceramicist-mug-shadow"></span>
+				</div>
+			))}
+		</div>
+
+		<div class="ceramicist-center">
+			<img
+				src="/soapy wordmark.svg"
+				alt="SOAPY"
+				class="ceramicist-wordmark"
+				loading="eager"
+			/>
+			<p class="ceramicist-subtitle">artist</p>
+		</div>
+	</main>
+</Layout>
+
+<script type="module">
+	const containers = Array.from(
+		document.querySelectorAll('.ceramicist-mug-container')
+	);
+
+	function isTooClose(pos1, pos2, minDistance) {
+		const dx = pos1.left - pos2.left;
+		const dy = pos1.top - pos2.top;
+		return Math.sqrt(dx * dx + dy * dy) < minDistance;
+	}
+
+	function generateRandomPositions(count) {
+		const positions = [];
+		const baseMinDistance = 14;
+
+		for (let i = 0; i < count; i++) {
+			let top = 0;
+			let left = 0;
+			let attempts = 0;
+			let validPosition = false;
+
+			do {
+				top = Math.random() * 80 + 5;
+				left = Math.random() * 80 + 5;
+				attempts += 1;
+
+				const inCenter = top > 34 && top < 66 && left > 28 && left < 72;
+				const tooCloseToOther = positions.some((pos) => {
+					const minDistance = baseMinDistance + (pos.size - 140) * 0.05;
+					return isTooClose({ top, left }, pos, minDistance);
+				});
+
+				validPosition = !inCenter && !tooCloseToOther;
+			} while (!validPosition && attempts < 200);
+
+			const size = 140 + Math.random() * 40;
+			if (!validPosition) {
+				const angle = (i / count) * Math.PI * 2;
+				top = 50 + Math.sin(angle) * 30;
+				left = 50 + Math.cos(angle) * 35;
+			}
+			positions.push({ top, left, size });
+		}
+
+		return positions;
+	}
+
+	const positions = generateRandomPositions(containers.length);
+	containers.forEach((container, index) => {
+		const { top, left, size } = positions[index];
+		container.style.top = `${top}%`;
+		container.style.left = `${left}%`;
+		container.style.width = `${size}px`;
+		container.style.animationDelay = `${0.25 + index * 0.08}s`;
+	});
+
+	requestAnimationFrame(() => {
+		const page = document.querySelector('.ceramicist-page');
+		if (page) {
+			page.classList.remove('is-loading');
+			page.classList.add('is-ready');
+		}
+	});
+</script>
